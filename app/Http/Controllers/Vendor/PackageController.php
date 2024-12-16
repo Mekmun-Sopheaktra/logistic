@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Vendor;
 
 use App\Http\Resources\Vendor\PackageResource;
+use App\Http\Resources\Vendor\PackageShowResource;
+use App\Models\Driver;
 use App\Traits\BaseApiResponse;
 use Illuminate\Http\Request;
 use App\Models\Package;
@@ -20,12 +22,33 @@ class PackageController extends Controller
     public function index(Request $request)
     {
         $limit = $request->query('limit', 15); // Default items per page is 15
-        $packages = Package::query()
-            ->with(['vendor', 'shipment', 'invoice', 'location', 'customer'])
-            ->paginate($limit);
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
+
+        $packagesQuery = Package::query()
+            ->with(['vendor', 'shipment', 'invoice', 'location', 'customer']);
+
+        if ($startDate && $endDate) {
+            $packagesQuery->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        $packages = $packagesQuery->paginate($limit);
+
+        $data = [
+            'packages' => PackageResource::collection($packages),
+            'total' => $packages->total(),
+            'per_page' => $packages->perPage(),
+            'current_page' => $packages->currentPage(),
+            'last_page' => $packages->lastPage(),
+            'from' => $packages->firstItem(),
+            'to' => $packages->lastItem(),
+            'next_page_url' => $packages->nextPageUrl(),
+            'prev_page_url' => $packages->previousPageUrl(),
+            'path' => $packages->path(),
+        ];
 
         return $this->success(
-            PackageResource::collection($packages),
+            $data,
             'Packages Retrieved',
             'Packages fetched successfully with pagination.'
         );
@@ -50,7 +73,6 @@ class PackageController extends Controller
             'vendor_id' => 'required|exists:vendors,id',
             'status' => 'nullable|string',
         ]);
-        logger($validatedData);
 
         if ($request->hasFile('image')) {
             $validatedData['image'] = $request->file('image')->store('packages', 'public');
@@ -74,7 +96,17 @@ class PackageController extends Controller
      */
     public function show($id)
     {
-        $package = Package::find($id);
+        $package = Package::query()
+            ->with(['vendor', 'shipment', 'invoice', 'location', 'customer'])
+            ->find($id);
+        
+
+        if ($package && $package->invoice) {
+            $driver = Driver::find($package->invoice->driver_id);
+            if ($driver) {
+                $package->driver = $driver;
+            }
+        }
 
         if (!$package) {
             return $this->failed(
@@ -86,7 +118,7 @@ class PackageController extends Controller
         }
 
         return $this->success(
-            $package,
+            PackageShowResource::make($package),
             'Package Retrieved',
             'The package details have been retrieved successfully.'
         );
