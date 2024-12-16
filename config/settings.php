@@ -9,5 +9,6 @@ return [
         'employee' => ConstUserRole::EMPLOYEE,
         'admin' => ConstUserRole::ADMIN,
         'vendor' => ConstUserRole::VENDOR,
+        'delivery' => ConstUserRole::DELIVERY
     ]
 ];

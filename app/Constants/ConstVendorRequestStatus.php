@@ -4,13 +4,11 @@ namespace App\Constants;
 
 use ReflectionClass;
 
-class ConstUserRole
+class ConstVendorRequestStatus
 {
-    const ADMIN = 1;
-    const EMPLOYEE = 2;
-    const VENDOR = 3;
-
-    const DELIVERY = 4;
+    const Pending = 1;
+    const APPROVED = 2;
+    const DECLINED = 3;
 
 
     /**

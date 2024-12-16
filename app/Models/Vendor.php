@@ -13,12 +13,13 @@ class Vendor extends Model
         "first_name",
         "last_name",
         "business_name",
+        "business_type",
+        "business_description",
         "dob",
         "gender",
         "address",
         "contact_number",
         "image",
-        "type",
         "bank_name",
         "bank_number",
         "user_id"
@@ -27,5 +28,11 @@ class Vendor extends Model
     public function products()
     {
         return $this->hasMany(Products::class);
+    }
+
+    //relation to user
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

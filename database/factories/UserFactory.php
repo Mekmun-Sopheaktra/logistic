@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Constants\ConstUserRole;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -18,18 +19,11 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'role' => fake()->randomElement(['user', 'admin']), // Adjust roles as needed
-            'first_name' => fake()->firstName(),
-            'last_name' => fake()->lastName(),
-            'business_name' => fake()->optional()->company(),
-            'dob' => fake()->optional()->date(),
-            'gender' => fake()->randomElement(['male', 'female', 'other']),
-            'address' => fake()->optional()->address(),
-            'contact_number' => fake()->optional()->phoneNumber(),
-            'email' => fake()->unique()->safeEmail(),
+            'role' => fake()->randomElement([ConstUserRole::VENDOR]), // Adjust roles as needed
+            'email' => "vendor@example.com",
             'email_verified_at' => now(),
             'password' => bcrypt('password'), // Default password
-            'image' => fake()->optional()->imageUrl(200, 200, 'people'),
+            'account_status' => true,
             'remember_token' => Str::random(10),
         ];
     }
