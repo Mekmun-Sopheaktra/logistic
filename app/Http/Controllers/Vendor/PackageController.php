@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Vendor;
 use App\Http\Resources\Vendor\PackageResource;
 use App\Http\Resources\Vendor\PackageShowResource;
 use App\Models\Driver;
+use App\Models\Vendor;
 use App\Traits\BaseApiResponse;
 use Illuminate\Http\Request;
 use App\Models\Package;
@@ -25,8 +26,17 @@ class PackageController extends Controller
         $startDate = $request->query('start_date');
         $endDate = $request->query('end_date');
 
+        // Get the current user's vendor_id from the Vendor table
+        $user = auth()->user();
+        $vendor = Vendor::where('user_id', $user->id)->first();
+
+        if (!$vendor) {
+            return $this->error('Vendor not found for the current user.', 404);
+        }
+
         $packagesQuery = Package::query()
-            ->with(['vendor', 'shipment', 'invoice', 'location', 'customer']);
+            ->with(['vendor', 'shipment', 'invoice', 'location', 'customer'])
+            ->where('vendor_id', $vendor->id);
 
         if ($startDate && $endDate) {
             $packagesQuery->whereBetween('created_at', [$startDate, $endDate]);
@@ -96,25 +106,37 @@ class PackageController extends Controller
      */
     public function show($id)
     {
+        $user = auth()->user();
+        $vendor = Vendor::where('user_id', $user->id)->first();
+
+        if (!$vendor) {
+            return $this->failed(
+                null,
+                'Vendor Not Found',
+                'No vendor associated with the current user.',
+                404
+            );
+        }
+
         $package = Package::query()
             ->with(['vendor', 'shipment', 'invoice', 'location', 'customer'])
+            ->where('vendor_id', $vendor->id) // Ensure the package belongs to this vendor
             ->find($id);
-        
-
-        if ($package && $package->invoice) {
-            $driver = Driver::find($package->invoice->driver_id);
-            if ($driver) {
-                $package->driver = $driver;
-            }
-        }
 
         if (!$package) {
             return $this->failed(
                 null,
                 'Package Not Found',
-                'The requested package does not exist.',
+                'The requested package does not exist or does not belong to your vendor.',
                 404
             );
+        }
+
+        if ($package->invoice) {
+            $driver = Driver::find($package->invoice->driver_id);
+            if ($driver) {
+                $package->driver = $driver;
+            }
         }
 
         return $this->success(
