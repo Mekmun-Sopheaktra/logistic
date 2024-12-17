@@ -47,6 +47,7 @@ class PackageController extends Controller
 
         $packages = $packagesQuery->paginate($limit);
 
+        logger($packages);
         $data = [
             'packages' => PackageResource::collection($packages),
             'total' => $packages->total(),
@@ -331,7 +332,6 @@ class PackageController extends Controller
         $user = auth()->user();
         $vendor = Vendor::where('user_id', $user->id)->first();
 
-        logger($vendor);
         if (!$vendor) {
             return $this->failed(
                 null,

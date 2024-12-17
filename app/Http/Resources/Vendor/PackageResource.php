@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Vendor;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,7 +21,7 @@ class PackageResource extends JsonResource
             'customer_name' => $this->customer->first_name . ' ' . $this->customer->last_name,
             'customer_phone' => $this->customer->phone,
             'location' => $this->location->location,
-            'shipment_date' => $this->shipment->date ?? null,
+            'date' => Carbon::parse($this->created_at)->format('d/m/Y H:i') ?? null,
             'package_status' => $this->status,
         ];
     }

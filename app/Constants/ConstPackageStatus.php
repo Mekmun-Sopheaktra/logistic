@@ -4,7 +4,7 @@ namespace App\Constants;
 
 use ReflectionClass;
 
-class ConstPackageStatusRole
+class ConstPackageStatus
 {
     const COMPLETED = 1;
     const HOLD = 2;
