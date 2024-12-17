@@ -34,7 +34,7 @@ class PackageController extends Controller
         $vendor = Vendor::where('user_id', $user->id)->first();
 
         if (!$vendor) {
-            return $this->error('Vendor not found for the current user.', 404);
+            return $this->failed(null,'Vendor not found for the current user.', 'No vendor associated with the current user.');
         }
 
         $packagesQuery = Package::query()
@@ -47,7 +47,6 @@ class PackageController extends Controller
 
         $packages = $packagesQuery->paginate($limit);
 
-        logger($packages);
         $data = [
             'packages' => PackageResource::collection($packages),
             'total' => $packages->total(),
@@ -210,7 +209,6 @@ class PackageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        logger($request->all());
         $validatedData = $request->validate([
             'number' => 'required|string',
             'name' => 'required|string|max:255',
