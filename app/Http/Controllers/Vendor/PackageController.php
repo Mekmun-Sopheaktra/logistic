@@ -324,4 +324,50 @@ class PackageController extends Controller
             'The package has been deleted successfully.'
         );
     }
+
+    //search by number
+    public function search($identifier)
+    {
+        $user = auth()->user();
+        $vendor = Vendor::where('user_id', $user->id)->first();
+
+        logger($vendor);
+        if (!$vendor) {
+            return $this->failed(
+                null,
+                'Vendor Not Found',
+                'No vendor associated with the current user.',
+                404
+            );
+        }
+
+        // Check if the identifier is numeric (ID) or a package number (character)
+        $query = Package::query()->with(['vendor', 'shipment', 'invoice', 'location', 'customer']);
+
+        $query->where('number', $identifier); // Assuming 'package_number' is the field storing the character-based identifier
+
+        $package = $query->where('vendor_id', $vendor->id)->first();
+
+        if (!$package) {
+            return $this->failed(
+                null,
+                'Package Not Found',
+                'The requested package does not exist or does not belong to your vendor.',
+                404
+            );
+        }
+
+        if ($package->invoice) {
+            $driver = Driver::find($package->invoice->driver_id);
+            if ($driver) {
+                $package->driver = $driver;
+            }
+        }
+
+        return $this->success(
+            PackageShowResource::make($package),
+            'Package Retrieved',
+            'The package details have been retrieved successfully.'
+        );
+    }
 }

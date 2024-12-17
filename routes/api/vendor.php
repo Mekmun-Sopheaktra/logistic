@@ -27,6 +27,9 @@ Route::prefix('vendor')->group(function () {
             Route::get('{id}', [PackageController::class, 'show'])->name('vendor.packages.show');
             Route::put('{id}', [PackageController::class, 'update'])->name('vendor.packages.update');
             Route::delete('{id}', [PackageController::class, 'destroy'])->name('vendor.packages.destroy');
+
+            //search package by number
+            Route::get('search', [PackageController::class, 'search'])->name('vendor.packages.search');
         });
     });
 });
