@@ -29,7 +29,7 @@ Route::prefix('vendor')->group(function () {
             Route::delete('{id}', [PackageController::class, 'destroy'])->name('vendor.packages.destroy');
 
             //search package by number
-            Route::get('search', [PackageController::class, 'search'])->name('vendor.packages.search');
+            Route::get('search/{number}', [PackageController::class, 'search'])->name('vendor.packages.search');
         });
     });
 });
