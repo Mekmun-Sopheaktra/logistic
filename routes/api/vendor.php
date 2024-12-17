@@ -2,8 +2,7 @@
 
 use App\Http\Controllers\Vendor\AuthController;
 use App\Http\Controllers\Vendor\PackageController;
-use Illuminate\Routing\Route;
-
+use Illuminate\Support\Facades\Route;
 Route::prefix('vendor')->group(function () {
     // ---------------------------------Public routes---------------------------------
 

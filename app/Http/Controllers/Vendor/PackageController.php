@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use App\Models\Package;
 use App\Http\Controllers\Controller;
 
-
 class PackageController extends Controller
 {
     use BaseApiResponse, UploadImage;
