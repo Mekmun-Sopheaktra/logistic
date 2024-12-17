@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Delivery\AuthController;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Routing\Route;
 
 Route::prefix('delivery')->group(function () {
     // ---------------------------------Public routes---------------------------------
