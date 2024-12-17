@@ -12,7 +12,8 @@ use App\Traits\BaseApiResponse;
 use App\Traits\UploadImage;
 use Illuminate\Http\Request;
 use App\Models\Package;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
+
 
 class PackageController extends Controller
 {

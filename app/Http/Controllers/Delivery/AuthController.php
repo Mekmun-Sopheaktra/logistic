@@ -7,7 +7,7 @@ use App\Traits\BaseApiResponse;
 use Illuminate\Http\Request;
 use App\Models\Driver;
 use App\Models\User;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;

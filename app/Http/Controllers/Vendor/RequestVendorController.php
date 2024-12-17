@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Vendor;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Vendor\RequestVendorRequest;
 use App\Models\RequestVendor;
 use App\Traits\BaseApiResponse;
+use App\Http\Controllers\Controller;
+
 
 class RequestVendorController extends Controller
 {

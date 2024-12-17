@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Vendor;
 
 use App\Constants\ConstUserRole;
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Vendor;
 use App\Traits\BaseApiResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
