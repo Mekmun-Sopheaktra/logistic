@@ -15,27 +15,27 @@ class PackageShowResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'image' => $this->image,
+            'id' => $this->id ?? null,
+            'image' => $this->image ?? null,
             'package' => [
-                'package_number' => $this->number,
-                'customer_name' => $this->customer->first_name . ' ' . $this->customer->last_name,
-                'customer_phone' => $this->customer->phone,
-                'location' => $this->location->location,
-                'total_price' => $this->price,
+                'package_number' => $this->number ?? null,
+                'customer_name' => $this->customer->first_name . ' ' . $this->customer->last_name ?? null,
+                'customer_phone' => $this->customer->phone ?? null,
+                'location' => $this->location->location ?? null,
+                'total_price' => $this->price ?? null,
             ],
             'delivery' => [
-                'shipment_date' => $this->shipment->date,
-                'package_status' => $this->status,
-                'driver_name' => $this->driver->first_name . ' ' . $this->driver->last_name,
-                'driver_phone' => $this->driver->contact_number,
-                'delivery_fee' => $this->shipment->delivery_fee,
+                'shipment_date' => $this->shipment->date ?? null,
+                'package_status' => $this->status ?? null,
+                'driver_name' => $this->driver?->first_name . ' ' . $this->driver?->last_name ?? null,
+                'driver_phone' => $this->driver->contact_number ?? null,
+                'delivery_fee' => $this->shipment->delivery_fee ?? null,
             ],
             'vendor' => [
-                'vendor_name' => $this->vendor->first_name . ' ' . $this->vendor->last_name,
-                'pickup_date' => $this->shipment->date,
-                'vendor_phone' => $this->vendor->contact_number,
-                'vendor_address' => $this->vendor->address
+                'vendor_name' => $this->vendor->first_name . ' ' . $this->vendor->last_name ?? null,
+                'pickup_date' => $this->shipment->date ?? null,
+                'vendor_phone' => $this->vendor->contact_number ?? null,
+                'vendor_address' => $this->vendor->address ?? null,
             ],
         ];
     }

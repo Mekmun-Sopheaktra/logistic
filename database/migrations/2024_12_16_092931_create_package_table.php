@@ -27,13 +27,6 @@ return new class extends Migration
             $table->unsignedBigInteger('invoice_id')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();
-
-            // Foreign keys
-            $table->foreign('vendor_id')->references('id')->on('vendors')->onDelete('cascade');
-            $table->foreign('shipment_id')->references('id')->on('shipments')->onDelete('cascade');
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
-            $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
-
         });
     }
 

@@ -13,24 +13,17 @@ return new class extends Migration
     {
         Schema::create('invoice', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('customer_id');
-            $table->unsignedBigInteger('vendor_id');
-            $table->unsignedBigInteger('employee_id');
-            $table->unsignedBigInteger('driver_id');
-            $table->unsignedBigInteger('package_id');
+            $table->unsignedBigInteger('customer_id')->nullable();
+            $table->unsignedBigInteger('vendor_id')->nullable();
+            $table->unsignedBigInteger('employee_id')->nullable();
+            $table->unsignedBigInteger('driver_id')->nullable();
+            $table->unsignedBigInteger('package_id')->nullable();
             $table->string('number');
             $table->date('date')->nullable();
             $table->string('total')->nullable();
             $table->string('status')->nullable();
             $table->string('note')->nullable();
             $table->timestamps();
-
-            // Foreign keys
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
-            $table->foreign('vendor_id')->references('id')->on('vendors')->onDelete('cascade');
-            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
-            $table->foreign('driver_id')->references('id')->on('drivers')->onDelete('cascade');
-            $table->foreign('package_id')->references('id')->on('packages')->onDelete('cascade');
         });
     }
 

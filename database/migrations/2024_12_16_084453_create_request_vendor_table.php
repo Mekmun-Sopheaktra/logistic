@@ -28,10 +28,6 @@ return new class extends Migration
             $table->string("bank_name")->nullable();
             $table->string("bank_number")->nullable();
             $table->string("status")->default(ConstVendorRequestStatus::Pending);
-
-            // Foreign key for linking to the users table
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Assuming you have a users table
-
             $table->timestamps();
         });
     }

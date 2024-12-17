@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('last_name'); // User's last name
             $table->string('contact_number', 20)->nullable(); // Contact number (optional)
             $table->string('image')->nullable(); // Optional profile image
-            $table->string("user_id");
+            $table->unsignedBigInteger("user_id")->nullable();
             $table->timestamps();
         });
     }

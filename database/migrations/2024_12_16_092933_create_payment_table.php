@@ -13,18 +13,13 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('invoice_id');
-            $table->unsignedBigInteger('customer_id');
-            $table->unsignedBigInteger('vendor_id');
+            $table->unsignedBigInteger('invoice_id')->nullable();
+            $table->unsignedBigInteger('customer_id')->nullable();
+            $table->unsignedBigInteger('vendor_id')->nullable();
             $table->string('amount');
             $table->string('currency');
             $table->string('status');
             $table->timestamps();
-
-            // Foreign key constraints
-            $table->foreign('invoice_id')->references('id')->on('invoice')->onDelete('cascade');
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
-            $table->foreign('vendor_id')->references('id')->on('vendors')->onDelete('cascade');
         });
     }
 

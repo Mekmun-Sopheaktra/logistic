@@ -20,7 +20,7 @@ class PackageResource extends JsonResource
             'customer_name' => $this->customer->first_name . ' ' . $this->customer->last_name,
             'customer_phone' => $this->customer->phone,
             'location' => $this->location->location,
-            'shipment_date' => $this->shipment->date,
+            'shipment_date' => $this->shipment->date ?? null,
             'package_status' => $this->status,
         ];
     }

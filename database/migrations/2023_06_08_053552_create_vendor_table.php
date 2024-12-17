@@ -25,11 +25,8 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->string("bank_name")->nullable();
             $table->string("bank_number")->nullable();
-            $table->unsignedBigInteger('user_id');  // Make sure user_id is unsignedBigInteger
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
-
-            // Foreign key constraint
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
