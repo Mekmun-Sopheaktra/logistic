@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Delivery\AuthController;
+use App\Models\User;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,11 +24,25 @@ Route::get('/', function () {
 Route::get("/error");
 
 
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
+Route::get('/email/verify/{id}/{hash}', function ($id, $hash) {
+    // Find the user by ID
+    $user = User::findOrFail($id);
 
-    return redirect('/welcome');
-})->middleware(['auth', 'signed'])->name('verification.verify');
+    // Check if the hash matches
+    if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+        abort(403, 'Invalid verification link.');
+    }
+
+    // Mark the user as verified
+    if (!$user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified();
+    }
+
+    // Log the user in if necessary
+    Auth::login($user);
+
+    return redirect('/')->with('verified', true);
+})->middleware(['signed'])->name('verification.verify');
 
 Route::prefix('v1')->group(function () {
     Route::get('email/verify/{id}/{hash}', [AuthController::class, 'verify'])->name('delivery.verification.verify');
