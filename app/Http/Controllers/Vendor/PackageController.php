@@ -28,6 +28,7 @@ class PackageController extends Controller
         $limit = $request->query('limit', 15); // Default items per page is 15
         $startDate = $request->query('start_date');
         $endDate = $request->query('end_date');
+        $search = $request->query('search');
 
         // Get the current user's vendor_id from the Vendor table
         $user = auth()->user();
@@ -38,7 +39,16 @@ class PackageController extends Controller
         }
 
         $packagesQuery = Package::query()
-            ->with(['vendor', 'shipment', 'invoice', 'location', 'customer'])
+            ->when($search, function ($query, $search) {
+                $query->where('number', '=', $search);
+            })
+            ->with([
+                'vendor',
+                'shipment',
+                'invoice',
+                'location',
+                'customer'
+            ])
             ->where('vendor_id', $vendor->id);
 
         if ($startDate && $endDate) {
