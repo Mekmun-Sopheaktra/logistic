@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Delivery\AuthController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,3 +20,14 @@ Route::get('/', function () {
 });
 
 Route::get("/error");
+
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return redirect('/welcome');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::prefix('v1')->group(function () {
+    Route::get('email/verify/{id}/{hash}', [AuthController::class, 'verify'])->name('delivery.verification.verify');
+});

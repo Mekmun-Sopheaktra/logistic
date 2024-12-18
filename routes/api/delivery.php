@@ -12,6 +12,7 @@ Route::prefix('delivery')->group(function () {
         Route::post('/register', [AuthController::class, 'register'])->name('vendor.register');
         Route::post('/login', [AuthController::class, 'login'])->name('vendor.login');
 
+        Route::get('email/verify/{id}', [AuthController::class, 'verify'])->name('vendor.verification.verify');
     });
 
 
