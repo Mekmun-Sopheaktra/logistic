@@ -21,7 +21,7 @@ class AuthController extends Controller
     {
         $validatedData = $request->validate([
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8',
 
             // Driver fields
             'first_name' => 'required|string|max:255',
