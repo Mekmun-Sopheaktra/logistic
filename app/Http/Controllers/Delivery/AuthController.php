@@ -35,6 +35,7 @@ class AuthController extends Controller
             'image' => 'nullable|string',
             'bank_name' => 'nullable|string|max:255',
             'bank_number' => 'nullable|string|max:255',
+            'telegram_contact' => 'nullable|string|max:255',
         ]);
 
         // Create User
@@ -55,6 +56,7 @@ class AuthController extends Controller
             'gender' => $validatedData['gender'],
             'zone' => $validatedData['zone'],
             'contact_number' => $validatedData['contact_number'],
+            'telegram_contact' => $validatedData['telegram_contact'] ?? null,
             'image' => $validatedData['image'] ?? null,
             'bank_name' => $validatedData['bank_name'] ?? null,
             'bank_number' => $validatedData['bank_number'] ?? null,

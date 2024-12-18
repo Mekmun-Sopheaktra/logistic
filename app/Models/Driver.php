@@ -22,6 +22,7 @@ class Driver extends Model
         'gender',
         'zone',
         'contact_number',
+        'telegram_contact',
         'image',
         'bank_name',
         'bank_number',

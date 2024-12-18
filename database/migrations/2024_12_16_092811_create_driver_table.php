@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('gender', 10)->nullable(); // Gender (optional, e.g., Male/Female/Other)
             $table->text('zone')->nullable(); // Full address (optional)
             $table->string('contact_number', 20)->nullable(); // Contact number (optional)
+            $table->string('telegram_contact')->nullable();
             $table->string('image')->nullable(); // Optional profile image
             $table->string("bank_name")->nullable();
             $table->string("bank_number")->nullable();
