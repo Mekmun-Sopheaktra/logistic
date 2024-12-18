@@ -61,7 +61,7 @@ class AuthController extends Controller
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:8|confirmed',
-                'account_status' => 'sometimes|string|in:true,false',
+                'account_status' => 'sometimes|string',
                 // Vendor-specific fields
                 'first_name' => 'required_if:role,vendor|string|max:255',
                 'last_name' => 'required_if:role,vendor|string|max:255',
@@ -93,7 +93,7 @@ class AuthController extends Controller
             $data['password'] = bcrypt($data['password']);
 
             // Default account status to active if not provided
-            $data['account_status'] = $data['account_status'] ?? true;
+            $data['account_status'] = $data['account_status'] ?? 'active';
 
             // Create the user
             $user = User::create([

@@ -21,7 +21,7 @@ class AuthController extends Controller
     {
         $validatedData = $request->validate([
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:8|confirmed',
 
             // Driver fields
             'first_name' => 'required|string|max:255',
@@ -46,6 +46,9 @@ class AuthController extends Controller
             'account_status' => 'active', // Default account status
         ]);
 
+        // Dispatch email verification notification
+        $user->sendEmailVerificationNotification();
+
         // Create Driver
         $driver = Driver::create([
             'first_name' => $validatedData['first_name'],
@@ -65,8 +68,8 @@ class AuthController extends Controller
 
         return $this->success(
             ['driver' => $driver, 'user' => $user],
-            "Successfully created Driver",
-            "Successfully created Driver"
+            "Successfully created Driver. Please verify your email.",
+            "Successfully created Driver. Please verify your email."
         );
     }
 
