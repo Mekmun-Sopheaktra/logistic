@@ -24,6 +24,7 @@ class Package extends Model
         'vendor_id',
         'customer_id',
         'location_id',
+        'driver_id',
         'shipment_id',
         'invoice_id',
         'status',
@@ -53,6 +54,12 @@ class Package extends Model
     public function shipment()
     {
         return $this->belongsTo(Shipment::class);
+    }
+
+    //driver relationship
+    public function driver()
+    {
+        return $this->belongsTo(Driver::class);
     }
 
     // Example relationship with Invoice

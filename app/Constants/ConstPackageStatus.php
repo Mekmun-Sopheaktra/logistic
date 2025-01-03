@@ -6,9 +6,10 @@ use ReflectionClass;
 
 class ConstPackageStatus
 {
-    const COMPLETED = 1;
-    const HOLD = 2;
-    const CANCELLED = 3;
+    const COMPLETED = 'completed';
+    const PENDING = 'pending';
+    const IN_TRANSIT = 'in_transit';
+    const CANCELLED = 'cancelled';
 
     /**
      * Get all constants

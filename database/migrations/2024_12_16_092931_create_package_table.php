@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('packages', function (Blueprint $table) {
             $table->id();
-            $table->string('number')->unique();
+            $table->string('number');
             $table->string('name');
             $table->string('slug');
             $table->string('price')->nullable();
@@ -23,9 +23,10 @@ return new class extends Migration
             $table->unsignedBigInteger('vendor_id')->nullable();
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->unsignedBigInteger('location_id')->nullable();
+            $table->unsignedBigInteger('driver_id')->nullable();
             $table->unsignedBigInteger('shipment_id')->nullable();
             $table->unsignedBigInteger('invoice_id')->nullable();
-            $table->string('status')->nullable();
+            $table->enum('status', ['pending', 'in_transit','completed', 'cancelled'])->default('pending');
             $table->timestamps();
         });
     }

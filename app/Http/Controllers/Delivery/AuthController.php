@@ -89,6 +89,13 @@ class AuthController extends Controller
 
         $user = Auth::user();
 
+        // Check if the user's email is verified
+        if (is_null($user->email_verified_at)) {
+            throw ValidationException::withMessages([
+                'email' => ['Your email address is not verified. Please verify your email before logging in.'],
+            ]);
+        }
+
         // Generate token using Passport
         $tokenResult = $user->createToken('DriverAuthToken');
         $token = $tokenResult->accessToken;

@@ -56,6 +56,18 @@ class User extends Authenticatable
         return $this->hasOne(Employee::class);
     }
 
+    //package relationship
+    public function packages()
+    {
+        return $this->hasMany(Package::class);
+    }
+
+    //driver relationship
+    public function driver()
+    {
+        return $this->hasOne(Driver::class);
+    }
+
     public function sendEmailVerificationNotification()
     {
         $this->notify(new VerifyRegisterEmail);

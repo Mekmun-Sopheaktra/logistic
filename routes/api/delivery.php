@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Delivery\AuthController;
+use App\Http\Controllers\Delivery\DeliveryHomeController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -22,6 +23,7 @@ Route::prefix('delivery')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('vendor.logout');
 
 
-        //package
+        //home
+        Route::get('/home', [DeliveryHomeController::class, 'index'])->name('vendor.home');
     });
 });

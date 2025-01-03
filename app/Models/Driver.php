@@ -35,6 +35,11 @@ class Driver extends Model
         return $this->belongsTo(User::class);  // Assuming the 'user_id' is a foreign key to the User model
     }
 
+    public function packages()
+    {
+        return $this->hasMany(Package::class);
+    }
+
     // Optionally, you can define the cast for 'dob' if you want it as a date type
     protected $casts = [
         'dob' => 'date',
