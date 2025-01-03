@@ -26,9 +26,10 @@ class PackageController extends Controller
     public function index(Request $request)
     {
         $limit = $request->query('limit', 15); // Default items per page is 15
-        $startDate = $request->query('start_date');
-        $endDate = $request->query('end_date');
+        $date = $request->query('date');
         $search = $request->query('search');
+        //location filter
+        $location = $request->query('location');
 
         // Get the current user's vendor_id from the Vendor table
         $user = auth()->user();
@@ -42,6 +43,8 @@ class PackageController extends Controller
             ->when($search, function ($query, $search) {
                 $query->where('number', '=', $search);
             })
+            //status in pending and in_transit
+            ->whereIn('status', ['pending', 'in_transit'])
             ->with([
                 'vendor',
                 'shipment',
@@ -50,6 +53,79 @@ class PackageController extends Controller
                 'customer'
             ])
             ->where('vendor_id', $vendor->id);
+
+        //filter by location that location is related to the package
+        if ($location) {
+            $packagesQuery->whereHas('location', function ($query) use ($location) {
+                $query->where('location', 'like', '%' . $location . '%');
+            });
+        }
+
+        if ($date) {
+            $packagesQuery->whereDate('created_at', $date);
+        }
+
+        $packages = $packagesQuery->paginate($limit);
+
+        $data = [
+            'packages' => PackageResource::collection($packages),
+            'amount' => $packagesQuery->sum('price'),
+            'total' => $packages->total(),
+            'per_page' => $packages->perPage(),
+            'current_page' => $packages->currentPage(),
+            'last_page' => $packages->lastPage(),
+            'from' => $packages->firstItem(),
+            'to' => $packages->lastItem(),
+            'next_page_url' => $packages->nextPageUrl(),
+            'prev_page_url' => $packages->previousPageUrl(),
+            'path' => $packages->path(),
+        ];
+
+        return $this->success(
+            $data,
+            'Packages Retrieved',
+            'Packages fetched successfully with pagination.'
+        );
+    }
+
+    public function history(Request $request)
+    {
+        $limit = $request->query('limit', 15); // Default items per page is 15
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
+        $search = $request->query('search');
+        //location filter
+        $location = $request->query('location');
+
+        // Get the current user's vendor_id from the Vendor table
+        $user = auth()->user();
+        $vendor = Vendor::where('user_id', $user->id)->first();
+
+        if (!$vendor) {
+            return $this->failed(null,'Vendor not found for the current user.', 'No vendor associated with the current user.');
+        }
+
+        $packagesQuery = Package::query()
+            ->when($search, function ($query, $search) {
+                $query->where('number', '=', $search);
+            })
+            //status not in pending and in_transit
+            ->whereNotIn('status', ['pending', 'in_transit'])
+            ->with([
+                'vendor',
+                'shipment',
+                'invoice',
+                'location',
+                'customer'
+            ])
+            ->where('vendor_id', $vendor->id);
+
+        //filter by location that location is related to the package
+        if ($location) {
+            $packagesQuery->whereHas('location', function ($query) use ($location) {
+                $query->where('location', 'like', '%' . $location . '%');
+            });
+        }
 
         if ($startDate && $endDate) {
             $packagesQuery->whereBetween('created_at', [$startDate, $endDate]);
@@ -60,6 +136,7 @@ class PackageController extends Controller
         logger($packages);
         $data = [
             'packages' => PackageResource::collection($packages),
+            'amount' => $packagesQuery->sum('price'),
             'total' => $packages->total(),
             'per_page' => $packages->perPage(),
             'current_page' => $packages->currentPage(),

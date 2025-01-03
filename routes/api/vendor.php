@@ -23,6 +23,8 @@ Route::prefix('vendor')->group(function () {
         //package
         Route::prefix('packages')->group(function () {
             Route::get('', [PackageController::class, 'index'])->name('vendor.packages.index');
+            //history
+            Route::get('history', [PackageController::class, 'history'])->name('vendor.packages.history');
             Route::post('', [PackageController::class, 'store'])->name('vendor.packages.store');
             Route::get('{id}', [PackageController::class, 'show'])->name('vendor.packages.show');
             Route::put('{id}', [PackageController::class, 'update'])->name('vendor.packages.update');

@@ -23,6 +23,7 @@ class PackageShowResource extends JsonResource
                 'customer_phone' => $this->customer->phone ?? null,
                 'location' => $this->location->location ?? null,
                 'total_price' => $this->price ?? null,
+                'status' => $this->status ?? null,
             ],
             'delivery' => [
                 'shipment_date' => $this->shipment->date ?? null,

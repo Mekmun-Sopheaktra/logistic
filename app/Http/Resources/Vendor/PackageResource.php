@@ -24,7 +24,7 @@ class PackageResource extends JsonResource
             'date' => Carbon::parse($this->created_at)->format('d/m/Y H:i') ?? null,
             'image' => $this->image,
             'zone' => $this->zone,
-            'package_status' => $this->status,
+            'status' => $this->status,
         ];
     }
 }
