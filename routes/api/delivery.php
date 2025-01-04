@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Delivery\AuthController;
 use App\Http\Controllers\Delivery\DeliveryHomeController;
+use App\Http\Controllers\Delivery\ExpressController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -22,11 +23,14 @@ Route::prefix('delivery')->group(function () {
 
         Route::get('/me', [AuthController::class, 'me'])->name('delivery.me');
         Route::post('/logout', [AuthController::class, 'logout'])->name('delivery.logout');
+
         Route::get('/home', [DeliveryHomeController::class, 'index'])->name('delivery.home');
+
         Route::post('/pickup/{id}', [DeliveryHomeController::class, 'pickupPackage'])->name('delivery.pickup-package');
         Route::post('/delivered/{id}', [DeliveryHomeController::class, 'deliveredPackage'])->name('delivery.delivered-package');
 
-        Route::prefix('profile')->group(function () {
+        Route::prefix('express')->group(function () {
+            Route::get('/', [ExpressController::class, 'index'])->name('delivery.express.index');
         });
     });
 });

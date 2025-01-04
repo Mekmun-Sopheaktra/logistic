@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('package_id')->nullable();
             $table->string('number')->unique();
-            $table->string('type')->unique();
-            $table->string('description')->unique();
-            $table->string('date')->unique();
-            $table->string('delivery_fee')->unique();
-            $table->string('status')->nullable();
+            $table->string('type')->nullable();
+            $table->string('description')->nullable();
+            $table->string('date')->nullable();
+            $table->string('delivery_fee')->nullable();
+            $table->enum('status', ['completed', 'pending', 'in_transit', 'cancelled'])->default('pending');
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Vendor;
 
+use App\Constants\ConstPackageStatus;
 use App\Http\Resources\Vendor\PackageResource;
 use App\Http\Resources\Vendor\PackageShowResource;
 use App\Models\Customer;
@@ -229,7 +230,7 @@ class PackageController extends Controller
             'vendor_id' => $vendor->id,
             'customer_id' => $customer->id,
             'location_id' => $location->id,
-            'status' => $validatedData['status'] ?? null,
+            'status' => $validatedData['status'] ?? ConstPackageStatus::PENDING,
         ]);
 
         return $this->success(
