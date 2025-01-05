@@ -25,6 +25,7 @@ class ProfileResource extends JsonResource
             'first_name'      => $vendor?->first_name,
             'last_name'       => $vendor?->last_name,
             'business_name'   => $vendor?->business_name,
+            'image'           => $vendor?->image,
             'dob'             => $vendor?->dob,
             'gender'          => $vendor?->gender,
             'address'         => $vendor?->address,

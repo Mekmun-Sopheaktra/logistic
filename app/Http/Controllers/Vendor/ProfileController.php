@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Vendor\ProfileResource;
 use App\Models\Vendor;
 use App\Traits\BaseApiResponse;
+use App\Traits\UploadImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
-    use BaseApiResponse;
+    use BaseApiResponse, UploadImage;
     //index
     public function index()
     {
@@ -40,16 +41,31 @@ class ProfileController extends Controller
         }
 
         $validated = $request->validate([
-            'first_name' => 'string',
-            'last_name' => 'string',
-            'business_name' => 'string',
-            'dob' => 'date',
-            'gender' => 'string',
-            'address' => 'string',
-            'contact_number' => 'string',
+            'first_name' => 'nullable|string',
+            'last_name' => 'nullable|string',
+            'business_name' => 'nullable|string',
+            'dob' => 'nullable|date',
+            'image' => 'nullable|image|max:2048',
+            'gender' => 'nullable|string',
+            'address' => 'nullable|string',
+            'contact_number' => 'nullable|string',
         ]);
 
-        $vendor->update($validated);
+        $image = null;
+        if ($request->hasFile('image')) {
+            $image = $this->upload($request);
+        }
+
+        $vendor->update([
+            'first_name' => $validated['first_name'] ?? $vendor->first_name,
+            'last_name' => $validated['last_name'] ?? $vendor->last_name,
+            'business_name' => $validated['business_name'] ?? $vendor->business_name,
+            'dob' => $validated['dob'] ?? $vendor->dob,
+            'image' => $image ?? $vendor->image,
+            'gender' => $validated['gender'] ?? $vendor->gender,
+            'address' => $validated['address'] ?? $vendor->address,
+            'contact_number' => $validated['contact_number'] ?? $vendor->contact_number,
+        ]);
 
         // Create an object for the resource
         $data = new ProfileResource([
