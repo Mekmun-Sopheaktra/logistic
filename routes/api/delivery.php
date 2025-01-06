@@ -31,6 +31,7 @@ Route::prefix('delivery')->group(function () {
 
         Route::prefix('express')->group(function () {
             Route::get('/', [ExpressController::class, 'index'])->name('delivery.express.index');
+            Route::get('/{id}', [ExpressController::class, 'show'])->name('delivery.express.show');
         });
     });
 });

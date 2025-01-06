@@ -45,7 +45,7 @@ class ProfileController extends Controller
             'last_name' => 'nullable|string',
             'business_name' => 'nullable|string',
             'dob' => 'nullable|date',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable',
             'gender' => 'nullable|string',
             'address' => 'nullable|string',
             'contact_number' => 'nullable|string',

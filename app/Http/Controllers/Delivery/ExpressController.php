@@ -59,4 +59,36 @@ class ExpressController extends Controller
         return $this->success($paginatedData, 'Welcome to express delivery');
     }
 
+    //show
+    public function show($id)
+    {
+        $user = auth()->user();
+        $driver = Driver::query()->where('user_id', $user->id)->first();
+
+        // Ensure the driver exists
+        if (!$driver) {
+            return $this->error('Driver not found', 404);
+        }
+
+        $package = Package::query()
+            ->with([
+                'vendor',
+                'customer',
+                'location',
+                'driver',
+                'shipment',
+                'invoice',
+            ])
+            ->where('driver_id', $driver->id)
+            ->where('id', $id)
+            ->first();
+
+        // Ensure the package exists
+        if (!$package) {
+            return $this->error('Package not found', 404);
+        }
+
+        return $this->success($package, 'Package details');
+    }
+
 }
