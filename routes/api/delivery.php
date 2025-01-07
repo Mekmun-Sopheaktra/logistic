@@ -29,8 +29,8 @@ Route::prefix('delivery')->group(function () {
         Route::prefix('express')->group(function () {
             Route::get('/', [ExpressController::class, 'index'])->name('delivery.express.index');
             Route::get('/{id}', [ExpressController::class, 'show'])->name('delivery.express.show');
-            Route::post('/pickup/{id}', [DeliveryHomeController::class, 'pickupPackage'])->name('delivery.pickup-package');
-            Route::post('/delivered/{id}', [DeliveryHomeController::class, 'deliveredPackage'])->name('delivery.delivered-package');
+            Route::post('/pickup', [DeliveryHomeController::class, 'pickupPackage'])->name('delivery.pickup-package');
+            Route::post('/delivered', [DeliveryHomeController::class, 'deliveredPackage'])->name('delivery.delivered-package');
         });
     });
 });

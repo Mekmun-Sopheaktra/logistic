@@ -33,7 +33,6 @@ class DeliveryHomeController extends Controller
             })
             ->where('driver_id', $driver->id)
             //order status in_transit first
-            ->orderByRaw("FIELD(status, 'in_transit') DESC")
             ->paginate($perPage);
 
         $count_all = Package::query()->where('driver_id', $driver->id)->count();
