@@ -7,6 +7,7 @@ use App\Constants\ConstShipmentStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Delivery\HomeResource;
 use App\Models\Driver;
+use App\Models\Invoice;
 use App\Models\Package;
 use App\Models\Shipment;
 use App\Traits\BaseApiResponse;
@@ -70,6 +71,8 @@ class DeliveryHomeController extends Controller
         Package::query()->where('id', $package_id)->update(['status' => ConstPackageStatus::IN_TRANSIT]);
         //update shipment status to in transit
         Shipment::query()->where('package_id', $package_id)->update(['status' => ConstShipmentStatus::IN_TRANSIT]);
+        //add driver id to invoice
+        Invoice::query()->where('package_id', $package_id)->update(['driver_id' => $driver->id]);
 
         return $this->success(null,'Package picked up successfully');
     }

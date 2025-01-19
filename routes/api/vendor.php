@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Vendor\AuthController;
+use App\Http\Controllers\Vendor\InvoiceController;
 use App\Http\Controllers\Vendor\PackageController;
 use App\Http\Controllers\Vendor\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +43,11 @@ Route::prefix('vendor')->group(function () {
             Route::post('reset-password', [ProfileController::class, 'resetPassword'])->name('vendor.profile.reset-password');
             //logout
             Route::post('logout', [ProfileController::class, 'logout'])->name('vendor.profile.logout');
+        });
+
+        //Invoice
+        Route::prefix('invoice')->group(function () {
+            Route::get('', [InvoiceController::class, 'index'])->name('vendor.invoice.index');
         });
     });
 });

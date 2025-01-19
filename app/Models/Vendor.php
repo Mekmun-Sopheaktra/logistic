@@ -35,4 +35,10 @@ class Vendor extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    //invoices
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
 }

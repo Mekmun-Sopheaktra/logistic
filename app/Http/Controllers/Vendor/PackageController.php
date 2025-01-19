@@ -233,6 +233,17 @@ class PackageController extends Controller
             'status' => $validatedData['status'] ?? ConstPackageStatus::PENDING,
         ]);
 
+        //create invoice for the package
+        $package->invoice()->create([
+            'customer_id' => $customer->id,
+            'vendor_id' => $vendor->id,
+            'package_id' => $package->id,
+            'number' => 'INV-' . $package->number,
+            'total' => $package->price,
+            'date' => now(),
+            'status' => 1,
+        ]);
+
         return $this->success(
             $package,
             'Package Created',
