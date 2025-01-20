@@ -17,13 +17,13 @@ class InvoicePackageResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'shipment_number' => $this->shipment->number,
-            'customer_phone' => $this->customer->phone,
-            'customer_name' => $this->customer->first_name . ' ' . $this->customer->last_name,
-            'location' => $this->location->location,
+            'shipment_number' => $this->shipment->number ?? null,
+            'customer_phone' => $this->customer->phone ?? null,
+            'customer_name' => $this->customer->first_name . ' ' . $this->customer->last_name ?? null,
+            'location' => $this->location->location ?? null,
             'date' => Carbon::parse($this->created_at)->format('d/m/Y H:i') ?? null,
             'package_price' => $this->price ?? null,
-            'delivery_fee' => $this->shipment->delivery_fee,
+            'delivery_fee' => $this->shipment->delivery_fee ?? null,
             'status' => $this->status,
         ];
     }

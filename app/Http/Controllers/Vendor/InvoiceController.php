@@ -8,16 +8,28 @@ use App\Http\Resources\Vendor\InvoiceResource;
 use App\Models\Package;
 use App\Traits\BaseApiResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class InvoiceController extends Controller
 {
     use BaseApiResponse;
+
+
 
     public function index(Request $request)
     {
         $user = auth()->user();
         $perPage = $request->query('per_page', config('pagination.per_page', 10));
         $dateFilter = $request->query('date');
+
+        // Reformat date to match Laravel's 'created_at' format (YYYY-MM-DD)
+        if ($dateFilter) {
+            try {
+                $dateFilter = Carbon::parse($dateFilter)->format('Y-m-d');
+            } catch (\Exception $e) {
+                return $this->error('Invalid date format.', 422);
+            }
+        }
 
         $invoices = $user->vendor->invoices()
             ->with([
