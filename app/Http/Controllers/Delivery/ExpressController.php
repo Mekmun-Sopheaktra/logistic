@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Delivery;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Delivery\ExpressHistoryCollection;
+use App\Http\Resources\Delivery\ExpressHistoryResource;
+use App\Http\Resources\Delivery\ExpressShowHistoryResource;
 use App\Models\Driver;
 use App\Models\Package;
 use App\Traits\BaseApiResponse;
@@ -22,7 +25,7 @@ class ExpressController extends Controller
 
         // Ensure the driver exists
         if (!$driver) {
-            return $this->error('Driver not found', 404);
+            return $this->failed('Driver not found', 404);
         }
 
         // Query packages grouped by updated_at
@@ -67,7 +70,7 @@ class ExpressController extends Controller
 
         // Ensure the driver exists
         if (!$driver) {
-            return $this->error('Driver not found', 404);
+            return $this->failed('Driver not found', 404);
         }
 
         $package = Package::query()
@@ -85,10 +88,46 @@ class ExpressController extends Controller
 
         // Ensure the package exists
         if (!$package) {
-            return $this->error('Package not found', 404);
+            return $this->failed('Package not found', 404);
         }
 
         return $this->success($package, 'Package details');
     }
 
+    //history package status = COMPLETED and CANCELLED
+    public function history(Request $request)
+    {
+        $perPage = $request->query('per_page', env('PAGINATION_PER_PAGE', 10));
+        $search = $request->query('search');
+        $date = $request->query('date');
+        $driver = Driver::where('user_id', auth()->id())->firstOrFail();
+
+        $query = Package::where('driver_id', $driver->id)
+            ->whereIn('status', ['completed', 'cancelled'])
+            ->when($search, fn($query) => $query->where('number', 'like', "%$search%"))
+            ->when($date, fn($query) => $query->whereDate('updated_at', $date))
+            ->with(['vendor', 'customer', 'location', 'driver', 'shipment', 'invoice'])
+            ->latest('updated_at');
+
+        // Paginate separately
+        $completed = (clone $query)->where('status', 'completed')->paginate($perPage);
+        $cancelled = (clone $query)->where('status', 'cancelled')->paginate($perPage);
+
+        return $this->success([
+            'completed' => new ExpressHistoryCollection($completed),
+            'cancelled' => new ExpressHistoryCollection($cancelled),
+        ], 'Express delivery history');
+    }
+
+    //showHistory
+    public function showHistory($id)
+    {
+        $driver = Driver::where('user_id', auth()->id())->firstOrFail();
+        $package = Package::where('driver_id', $driver->id)
+            ->whereIn('status', ['completed', 'cancelled'])
+            ->with(['vendor', 'customer', 'location', 'driver', 'shipment', 'invoice'])
+            ->findOrFail($id);
+
+        return $this->success(new ExpressShowHistoryResource($package), 'Express delivery history details');
+    }
 }

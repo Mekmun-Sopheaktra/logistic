@@ -69,6 +69,8 @@ class DeliveryHomeController extends Controller
         //update package status to picked up
         //Assign Driver Id
         Package::query()->where('id', $package_id)->update(['status' => ConstPackageStatus::IN_TRANSIT]);
+        //picked_up_at
+        Package::query()->where('id', $package_id)->update(['picked_up_at' => now()]);
         //update shipment status to in transit
         Shipment::query()->where('package_id', $package_id)->update(['status' => ConstShipmentStatus::IN_TRANSIT]);
         //add driver id to invoice
@@ -89,6 +91,8 @@ class DeliveryHomeController extends Controller
         }
         //update package status to delivered
         Package::query()->where('id', $package_id)->update(['status' => ConstPackageStatus::COMPLETED]);
+        //delivered_at
+        Package::query()->where('id', $package_id)->update(['delivered_at' => now()]);
         //update shipment status to delivered
         Shipment::query()->where('package_id', $package_id)->update(['status' => ConstShipmentStatus::COMPLETED]);
         return $this->success(null,'Package delivered successfully');

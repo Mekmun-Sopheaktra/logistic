@@ -26,6 +26,11 @@ Route::prefix('delivery')->group(function () {
 
         Route::get('/home', [DeliveryHomeController::class, 'index'])->name('delivery.home');
 
+        Route::prefix('express/history')->group(function () {
+            Route::get('', [ExpressController::class, 'history'])->name('delivery.express.history');
+            Route::get('/{id}', [ExpressController::class, 'showHistory'])->name('delivery.express.show-history');
+        });
+
         Route::prefix('express')->group(function () {
             Route::get('/', [ExpressController::class, 'index'])->name('delivery.express.index');
             Route::get('/{id}', [ExpressController::class, 'show'])->name('delivery.express.show');

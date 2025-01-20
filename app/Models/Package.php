@@ -21,6 +21,8 @@ class Package extends Model
         'description',
         'image',
         'zone',
+        'picked_up_at',
+        'delivered_at',
         'vendor_id',
         'customer_id',
         'location_id',

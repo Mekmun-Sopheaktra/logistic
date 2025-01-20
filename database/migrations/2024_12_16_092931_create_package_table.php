@@ -20,6 +20,9 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('image')->nullable();
             $table->string('zone')->nullable();
+            $table->string('picked_up_at')->nullable();
+            //delivered_at
+            $table->string('delivered_at')->nullable();
             $table->unsignedBigInteger('vendor_id')->nullable();
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->unsignedBigInteger('location_id')->nullable();
