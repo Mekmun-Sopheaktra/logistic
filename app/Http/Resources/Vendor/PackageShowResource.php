@@ -38,6 +38,11 @@ class PackageShowResource extends JsonResource
                 'vendor_phone' => $this->vendor->contact_number ?? null,
                 'vendor_address' => $this->vendor->address ?? null,
             ],
+            'location' => [
+                'location' => $this->location->location ?? null,
+                'latitude' => $this->location->lat ?? null,
+                'longitude' => $this->location->lng ?? null,
+            ],
         ];
     }
 }

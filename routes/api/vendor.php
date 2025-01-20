@@ -33,8 +33,6 @@ Route::prefix('vendor')->group(function () {
 
             //search package by number
             Route::get('search/{number}', [PackageController::class, 'search'])->name('vendor.packages.search');
-            //map-detail
-            Route::get('map/{id}', [PackageController::class, 'mapDetail'])->name('vendor.packages.map-detail');
         });
 
         Route::prefix('profile')->group(function () {
