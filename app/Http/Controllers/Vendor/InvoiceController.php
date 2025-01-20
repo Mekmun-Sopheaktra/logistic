@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Vendor;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Vendor\InvoiceCollection;
 use App\Http\Resources\Vendor\InvoiceResource;
 use App\Traits\BaseApiResponse;
 use Illuminate\Http\Request;
@@ -41,6 +42,6 @@ class InvoiceController extends Controller
             return $invoice;
         });
 
-        return $this->success(InvoiceResource::collection($invoices), 'List of vendor invoices.');
+        return $this->success(new InvoiceCollection($invoices), 'List of vendor invoices.');
     }
 }

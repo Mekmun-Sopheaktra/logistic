@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Vendor;
 
+use App\Constants\ConstInvoiceStatus;
 use App\Constants\ConstPackageStatus;
 use App\Http\Resources\Vendor\PackageResource;
 use App\Http\Resources\Vendor\PackageShowResource;
@@ -241,7 +242,7 @@ class PackageController extends Controller
             'number' => 'INV-' . $package->number,
             'total' => $package->price,
             'date' => now(),
-            'status' => 1,
+            'status' => ConstInvoiceStatus::UNPAID,
         ]);
 
         return $this->success(
@@ -446,6 +447,49 @@ class PackageController extends Controller
         $query->where('number', $identifier); // Assuming 'package_number' is the field storing the character-based identifier
 
         $package = $query->where('vendor_id', $vendor->id)->first();
+
+        if (!$package) {
+            return $this->failed(
+                null,
+                'Package Not Found',
+                'The requested package does not exist or does not belong to your vendor.',
+                404
+            );
+        }
+
+        if ($package->invoice) {
+            $driver = Driver::find($package->invoice->driver_id);
+            if ($driver) {
+                $package->driver = $driver;
+            }
+        }
+
+        return $this->success(
+            PackageShowResource::make($package),
+            'Package Retrieved',
+            'The package details have been retrieved successfully.'
+        );
+    }
+
+    //mapDetail
+    public function mapDetail($id)
+    {
+        $user = auth()->user();
+        $vendor = Vendor::where('user_id', $user->id)->first();
+
+        if (!$vendor) {
+            return $this->failed(
+                null,
+                'Vendor Not Found',
+                'No vendor associated with the current user.',
+                404
+            );
+        }
+
+        $package = Package::query()
+            ->with(['vendor', 'shipment', 'invoice', 'location', 'customer'])
+            ->where('vendor_id', $vendor->id) // Ensure the package belongs to this vendor
+            ->find($id);
 
         if (!$package) {
             return $this->failed(
