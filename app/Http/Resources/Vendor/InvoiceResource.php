@@ -24,6 +24,7 @@ class InvoiceResource extends JsonResource
             'status' => $this->status,
             'total_package_price' => $this->total_package_price,
             'total_delivery_fee' => $this->delivery_fee,
+            'package_status' => $this->package_status_counts, // Added status counts
             'package' => new InvoicePackageResource($this->package),
             'driver' => new DriverResource($this->driver),
             'vendor' => new VendorResource($this->vendor),

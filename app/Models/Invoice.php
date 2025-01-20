@@ -47,6 +47,12 @@ class Invoice extends Model
         return $this->belongsTo(Driver::class);
     }
 
+    public function packages()
+    {
+        return $this->hasMany(Package::class);
+    }
+
+    //belong to package
     public function package()
     {
         return $this->belongsTo(Package::class);

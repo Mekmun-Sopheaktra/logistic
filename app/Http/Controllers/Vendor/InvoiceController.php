@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Vendor;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Vendor\InvoiceCollection;
 use App\Http\Resources\Vendor\InvoiceResource;
+use App\Models\Package;
 use App\Traits\BaseApiResponse;
 use Illuminate\Http\Request;
 
@@ -16,29 +17,47 @@ class InvoiceController extends Controller
     {
         $user = auth()->user();
         $perPage = $request->query('per_page', config('pagination.per_page', 10));
+        $dateFilter = $request->query('date');
 
         $invoices = $user->vendor->invoices()
             ->with([
-                'package.vendor',
-                'package.customer',
-                'package.location',
-                'package.shipment',
+                'packages.vendor',
+                'packages.customer',
+                'packages.location',
+                'packages.shipment',
                 'driver',
+                'packages',
                 'employee'
             ])
             ->when($request->query('search'), fn($query, $search) => $query->where('number', 'like', "%$search%"))
-            ->when($request->query('date'), fn($query, $date) => $query->whereDate('created_at', $date))
+            ->when($dateFilter, fn($query, $date) => $query->whereDate('created_at', $date))
             ->paginate($perPage);
 
-        //total_package_price
-        $invoices->map(function ($invoice) {
-            $invoice->total_package_price = $invoice->package->sum('price');
-            return $invoice;
-        });
+        // Define all possible statuses
+        $allStatuses = ['completed', 'pending', 'in_transit', 'cancelled'];
 
-        //delivery_fee
-        $invoices->map(function ($invoice) {
-            $invoice->delivery_fee = $invoice->package->shipment->delivery_fee;
+        // Convert paginator collection and modify invoices
+        $invoices->getCollection()->transform(function ($invoice) use ($allStatuses, $dateFilter) {
+            // Ensure packages is a collection
+            $packages = $invoice->packages ?? collect();
+
+            $invoice->total_package_price = $packages->sum('price');
+            $invoice->delivery_fee = $packages->sum(fn($package) => optional($package->shipment)->delivery_fee ?? 0);
+
+            // Get the package status counts
+            $statusCounts = Package::query()
+                ->selectRaw('status, count(*) as count')
+                ->where('vendor_id', $invoice->vendor->id)
+                ->when($dateFilter, fn($query, $date) => $query->whereDate('created_at', $date))
+                ->groupBy('status')
+                ->get()
+                ->pluck('count', 'status')
+                ->toArray();
+
+            // Ensure all statuses exist with default 0
+            $invoice->package_status_counts = collect($allStatuses)
+                ->mapWithKeys(fn($status) => [$status => $statusCounts[$status] ?? 0]);
+
             return $invoice;
         });
 
