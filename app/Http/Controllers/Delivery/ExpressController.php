@@ -107,16 +107,9 @@ class ExpressController extends Controller
             ->when($search, fn($query) => $query->where('number', 'like', "%$search%"))
             ->when($date, fn($query) => $query->whereDate('updated_at', $date))
             ->with(['vendor', 'customer', 'location', 'driver', 'shipment', 'invoice'])
-            ->latest('updated_at');
+            ->latest('updated_at')->paginate($perPage);
 
-        // Paginate separately
-        $completed = (clone $query)->where('status', 'completed')->paginate($perPage);
-        $cancelled = (clone $query)->where('status', 'cancelled')->paginate($perPage);
-
-        return $this->success([
-            'completed' => new ExpressHistoryCollection($completed),
-            'cancelled' => new ExpressHistoryCollection($cancelled),
-        ], 'Express delivery history');
+        return $this->success($query, 'Express delivery history');
     }
 
     //showHistory
