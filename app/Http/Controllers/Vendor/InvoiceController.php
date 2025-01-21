@@ -103,7 +103,13 @@ class InvoiceController extends Controller
 
         $perPage = request()->query('per_page', config('pagination.per_page', 10));
         $dateFilter = request()->query('date');
-        logger($dateFilter);
+        if ($dateFilter) {
+            try {
+                $dateFilter = Carbon::parse($dateFilter)->format('Y-m-d');
+            } catch (\Exception $e) {
+                return $this->failed('Invalid date format.', 422);
+            }
+        }
         $vendorId = $user->vendor->id;
 
         // Vendor invoices
@@ -115,6 +121,7 @@ class InvoiceController extends Controller
                 'invoice.customer',
                 'invoice.driver',
                 'invoice.package',
+                'invoice.vendor',
             ])
             ->when($dateFilter, fn($query, $date) => $query->whereDate('created_at', $date))
             ->paginate($perPage);
