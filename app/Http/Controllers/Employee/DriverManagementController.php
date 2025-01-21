@@ -31,6 +31,12 @@ class DriverManagementController extends Controller
             'shipment_delivery_fee' => 'required',
         ]);
 
+        //check shipment_number is unique
+        $shipment = Shipment::where('number', $request->shipment_number)->first();
+        if ($shipment) {
+            return $this->failed(null, 'Shipment number already exists', 'Shipment number already exists', 400);
+        }
+
         //check if driver is invalid
         $driver = Driver::find($request->driver_id);
         if (!$driver) {

@@ -121,6 +121,6 @@ class ExpressController extends Controller
             ->with(['vendor', 'customer', 'location', 'driver', 'shipment', 'invoice'])
             ->findOrFail($id);
 
-        return $this->success(new ExpressShowHistoryResource($package), 'Express delivery history details');
+        return $this->success($package, 'Express delivery history details');
     }
 }
