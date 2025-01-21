@@ -7,6 +7,7 @@ use App\Constants\ConstPackageStatus;
 use App\Http\Resources\Vendor\PackageResource;
 use App\Http\Resources\Vendor\PackageShowResource;
 use App\Models\Customer;
+use App\Models\DeliveryTracking;
 use App\Models\Driver;
 use App\Models\Location;
 use App\Models\Vendor;
@@ -474,9 +475,41 @@ class PackageController extends Controller
     //mapDetail
     public function map($id)
     {
-        //get map from DeliveryTracking by package_id
-        $tracking = Package::find($id)->tracking;
+        //get package location
+        $tracking = Package::query()
+            ->with(['location'])
+            ->find($id);
 
-        
+        if (!$tracking) {
+            return $this->failed(
+                null,
+                'Package Not Found',
+                'The requested package does not exist.',
+                404
+            );
+        }
+
+        //get delivery_tracking
+        $delivery_tracking = DeliveryTracking::query()
+            ->where('package_id', $id)
+            ->get();
+
+        if (!$delivery_tracking) {
+            return $this->failed(
+                null,
+                'Delivery Tracking Not Found',
+                'The delivery tracking for the package does not exist.',
+                404
+            );
+        }
+
+        $tracking->delivery_tracking = $delivery_tracking;
+
+
+        return $this->success(
+            $tracking,
+            'Package Map Retrieved',
+            'The package map details have been retrieved successfully.'
+        );
     }
 }
