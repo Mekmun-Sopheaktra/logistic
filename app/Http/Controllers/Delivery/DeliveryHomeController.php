@@ -109,16 +109,19 @@ class DeliveryHomeController extends Controller
     //realtimeTracking
     public function realtimeTracking(Request $request)
     {
-
         $lat = $request->lat;
         $lng = $request->lng;
 
-        //update delivery tracking
-        $tracking = new DeliveryTracking();
-        $tracking->lat = $lat;
-        $tracking->lng = $lng;
-        $tracking->save();
+        // Find existing tracking record or create a new one
+        $tracking = DeliveryTracking::updateOrCreate(
+            ['package_id' => $request->package_id], // Condition to check
+            [
+                'lat' => $lat,
+                'lng' => $lng,
+                'status' => ConstPackageStatus::IN_TRANSIT,
+            ]
+        );
 
-        return $this->success(null,'Realtime tracking updated successfully');
+        return $this->success($tracking, 'Realtime tracking updated successfully');
     }
 }
