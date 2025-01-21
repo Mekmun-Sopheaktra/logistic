@@ -118,43 +118,43 @@ class InvoiceController extends Controller
             ->when($dateFilter, fn($query, $date) => $query->whereDate('created_at', $date))
             ->paginate($perPage);
 
-        // Add package count summary for each invoice
-        $vendorInvoices->getCollection()->transform(function ($vendorInvoice) {
-            $packageCounts = [
-                'total' => 0,
-                'completed' => 0,
-                'pending' => 0,
-                'in_transit' => 0,
-                'cancelled' => 0,
-            ];
+        // Initialize overall package summary
+        $packageSummary = [
+            'total' => 0,
+            'completed' => 0,
+            'pending' => 0,
+            'in_transit' => 0,
+            'cancelled' => 0,
+        ];
 
+        // Iterate over all vendor invoices and accumulate package counts
+        foreach ($vendorInvoices as $vendorInvoice) {
             foreach ($vendorInvoice->invoice as $invoice) {
                 if ($invoice->package) {
-                    $packageCounts['total']++;
+                    $packageSummary['total']++;
 
                     switch ($invoice->package->status) {
                         case 'completed':
-                            $packageCounts['completed']++;
+                            $packageSummary['completed']++;
                             break;
                         case 'pending':
-                            $packageCounts['pending']++;
+                            $packageSummary['pending']++;
                             break;
                         case 'in_transit':
-                            $packageCounts['in_transit']++;
+                            $packageSummary['in_transit']++;
                             break;
                         case 'cancelled':
-                            $packageCounts['cancelled']++;
+                            $packageSummary['cancelled']++;
                             break;
                     }
                 }
             }
+        }
 
-            // Attach package summary to the invoice
-            $vendorInvoice->package_summary = $packageCounts;
-            return $vendorInvoice;
-        });
-
-        return $this->success($vendorInvoices, 'List of vendor invoices.');
+        return $this->success([
+            'vendor_invoices' => $vendorInvoices,
+            'package_summary' => $packageSummary, // Attach the package summary to the response
+        ], 'List of vendor invoices.');
     }
 
     //vendorInvoiceShow
