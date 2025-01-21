@@ -102,15 +102,18 @@ class InvoiceController extends Controller
         }
 
         $perPage = request()->query('per_page', config('pagination.per_page', 10));
-        $dateFilter = request()->query('date', Carbon::now('Asia/Phnom_Penh')->toDateString());
+        $dateFilter = request()->query('date');
         $vendorId = $user->vendor->id;
 
         // Vendor invoices
         $vendorInvoices = VendorInvoice::query()
             ->where('vendor_id', $vendorId)
             ->with([
-                'vendor', // Load the vendor details
-                'invoice.package' // Only load the package related to invoice
+                'vendor',
+                'invoice',
+                'invoice.customer',
+                'invoice.driver',
+                'invoice.package',
             ])
             ->when($dateFilter, fn($query, $date) => $query->whereDate('created_at', $date))
             ->paginate($perPage);

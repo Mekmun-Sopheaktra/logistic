@@ -18,6 +18,12 @@ class VendorInvoice extends Model
         'status',
     ];
 
+    //cast created_at and updated_at to datetime Y-m-d
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d',
+        'updated_at' => 'datetime:Y-m-d',
+    ];
+
     public function vendor()
     {
         return $this->belongsTo(Vendor::class);
