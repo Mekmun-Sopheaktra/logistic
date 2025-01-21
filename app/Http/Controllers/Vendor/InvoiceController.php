@@ -103,6 +103,7 @@ class InvoiceController extends Controller
 
         $perPage = request()->query('per_page', config('pagination.per_page', 10));
         $dateFilter = request()->query('date');
+        logger($dateFilter);
         $vendorId = $user->vendor->id;
 
         // Vendor invoices
@@ -150,6 +151,8 @@ class InvoiceController extends Controller
                 }
             }
         }
+
+        $packageSummary['payment_status'] = 'unpaid'; // Add payment status
 
         return $this->success([
             'vendor_invoices' => $vendorInvoices,
