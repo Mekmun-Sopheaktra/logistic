@@ -5,9 +5,13 @@ namespace App\Http\Controllers\Employee;
 use App\Constants\ConstShipmentStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Driver;
+use App\Models\Invoice;
 use App\Models\Package;
 use App\Models\Shipment;
+use App\Models\Vendor;
+use App\Models\VendorInvoice;
 use App\Traits\BaseApiResponse;
+use Faker\Core\Number;
 use Illuminate\Http\Request;
 
 class DriverManagementController extends Controller
@@ -54,4 +58,46 @@ class DriverManagementController extends Controller
         //return response
         return $this->success($package, 'Driver assigned successfully');
     }
+
+    //create Vendor Invoice
+    public function createVendorInvoice(Request $request)
+    {
+        // Validate request
+        $request->validate([
+            'invoice_ids' => 'required|array',
+            'invoice_ids.*' => 'integer|exists:invoices,id',
+            'vendor_id' => 'required|integer|exists:vendors,id',
+        ]);
+
+        // Fetch vendor
+        $vendor = Vendor::find($request->vendor_id);
+        if (!$vendor) {
+            return $this->failed(null, 'Vendor not found', 'Vendor not found', 404);
+        }
+
+        // Fetch invoices
+        $invoiceIds = $request->invoice_ids;
+        $invoices = Invoice::whereIn('id', $invoiceIds)->get();
+        if ($invoices->count() != count($invoiceIds)) {
+            return $this->failed(null, 'One or more invoices not found', 'Invoice not found', 404);
+        }
+
+        // Generate random invoice number
+        $randomNumber = 'INV-' . rand(1000, 9999);
+
+        // Create vendor invoice
+        $vendorInvoice = new VendorInvoice();
+        $vendorInvoice->vendor_id = $request->vendor_id;
+        $vendorInvoice->invoice_number = $randomNumber;
+        $vendorInvoice->total = $invoices->sum('total');
+        $vendorInvoice->status = 'unpaid';
+        $vendorInvoice->save();
+
+        // Update invoices with vendor invoice ID
+        Invoice::whereIn('id', $invoiceIds)->update(['vendor_invoice_id' => $vendorInvoice->id]);
+
+        // Return response
+        return $this->success($vendorInvoice, 'Vendor invoice created successfully');
+    }
+
 }

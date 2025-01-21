@@ -12,4 +12,7 @@ Route::prefix('employee')->group(function () {
         Route::post('/assign-driver', [DriverManagementController::class, 'assignDriver'])->name('employee.assign-driver');
     });
 
+    //create vendor invoice
+    Route::post('/create-invoice', [DriverManagementController::class, 'createVendorInvoice'])->name('employee.create-invoice');
+
 });

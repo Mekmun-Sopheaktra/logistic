@@ -6,6 +6,7 @@ use App\Constants\ConstPackageStatus;
 use App\Constants\ConstShipmentStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Delivery\HomeResource;
+use App\Models\DeliveryTracking;
 use App\Models\Driver;
 use App\Models\Invoice;
 use App\Models\Package;
@@ -75,6 +76,11 @@ class DeliveryHomeController extends Controller
         Shipment::query()->where('package_id', $package_id)->update(['status' => ConstShipmentStatus::IN_TRANSIT]);
         //add driver id to invoice
         Invoice::query()->where('package_id', $package_id)->update(['driver_id' => $driver->id]);
+        //create delivery tracking
+        $tracking = new DeliveryTracking();
+        $tracking->package_id = $package_id;
+        $tracking->status = ConstPackageStatus::IN_TRANSIT;
+        $tracking->save();
 
         return $this->success(null,'Package picked up successfully');
     }
@@ -95,6 +101,24 @@ class DeliveryHomeController extends Controller
         Package::query()->where('id', $package_id)->update(['delivered_at' => now()]);
         //update shipment status to delivered
         Shipment::query()->where('package_id', $package_id)->update(['status' => ConstShipmentStatus::COMPLETED]);
+        //update delivery tracking status to delivered
+        DeliveryTracking::query()->where('package_id', $package_id)->update(['status' => ConstPackageStatus::COMPLETED]);
         return $this->success(null,'Package delivered successfully');
+    }
+
+    //realtimeTracking
+    public function realtimeTracking(Request $request)
+    {
+
+        $lat = $request->lat;
+        $lng = $request->lng;
+
+        //update delivery tracking
+        $tracking = new DeliveryTracking();
+        $tracking->lat = $lat;
+        $tracking->lng = $lng;
+        $tracking->save();
+
+        return $this->success(null,'Realtime tracking updated successfully');
     }
 }

@@ -33,6 +33,8 @@ Route::prefix('vendor')->group(function () {
 
             //search package by number
             Route::get('search/{number}', [PackageController::class, 'search'])->name('vendor.packages.search');
+            //map
+            Route::get('map/{id}', [PackageController::class, 'map'])->name('vendor.packages.map');
         });
 
         Route::prefix('profile')->group(function () {
@@ -48,6 +50,13 @@ Route::prefix('vendor')->group(function () {
         //Invoice
         Route::prefix('invoice')->group(function () {
             Route::get('', [InvoiceController::class, 'index'])->name('vendor.invoice.index');
+            Route::get('{id}', [InvoiceController::class, 'show'])->name('vendor.invoice.show');
+        });
+
+        //Vendor Invoice
+        Route::prefix('vendor-invoice')->group(function () {
+            Route::get('', [InvoiceController::class, 'vendorInvoice'])->name('vendor.vendor-invoice.index');
+            Route::get('{id}', [InvoiceController::class, 'vendorInvoiceShow'])->name('vendor.vendor-invoice.show');
         });
     });
 });

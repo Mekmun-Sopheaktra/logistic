@@ -29,6 +29,7 @@ class Package extends Model
         'driver_id',
         'shipment_id',
         'invoice_id',
+        'delivery_tracking_id',
         'status',
     ];
 
@@ -68,5 +69,11 @@ class Package extends Model
     public function invoice()
     {
         return $this->belongsTo(Invoice::class);
+    }
+
+    // Example relationship with DeliveryTracking one to one
+    public function deliveryTracking()
+    {
+        return $this->hasOne(DeliveryTracking::class);
     }
 }

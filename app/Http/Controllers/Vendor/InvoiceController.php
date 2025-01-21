@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Vendor\InvoiceCollection;
 use App\Http\Resources\Vendor\InvoiceResource;
 use App\Models\Package;
+use App\Models\VendorInvoice;
 use App\Traits\BaseApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -74,5 +75,59 @@ class InvoiceController extends Controller
         });
 
         return $this->success(new InvoiceCollection($invoices), 'List of vendor invoices.');
+    }
+
+    //show
+    public function show($id)
+    {
+        $invoice = auth()->user()->vendor->invoices()->with([
+            'packages.vendor',
+            'packages.customer',
+            'packages.location',
+            'packages.shipment',
+            'driver',
+            'packages',
+            'employee'
+        ])->findOrFail($id);
+
+        return $this->success(new InvoiceResource($invoice), 'Vendor invoice details.');
+    }
+
+    //vendorInvoice
+    public function vendorInvoice()
+    {
+        $user = auth()->user();
+        $perPage = request()->query('per_page', config('pagination.per_page', 10));
+        $dateFilter = request()->query('date');
+        $vendorId = $user->vendor->id;
+
+        //Vendor invoices
+        $vendorInvoices = VendorInvoice::query()
+            ->where('vendor_id', $vendorId)
+            ->with([
+                'vendor',
+                'invoice',
+            ])
+            ->when($dateFilter, fn($query, $date) => $query->whereDate('created_at', $date))
+            ->paginate($perPage);
+
+        return $this->success($vendorInvoices, 'List of vendor invoices.');
+    }
+
+    //vendorInvoiceShow
+    public function vendorInvoiceShow($id)
+    {
+        $user = auth()->user();
+        $vendorId = $user->vendor->id;
+
+        $vendorInvoice = VendorInvoice::query()
+            ->where('vendor_id', $vendorId)
+            ->with([
+                'vendor',
+                'invoice',
+            ])
+            ->findOrFail($id);
+
+        return $this->success(new InvoiceResource($vendorInvoice), 'Vendor invoice details.');
     }
 }

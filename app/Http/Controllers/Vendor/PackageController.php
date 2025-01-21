@@ -472,45 +472,11 @@ class PackageController extends Controller
     }
 
     //mapDetail
-    public function mapDetail($id)
+    public function map($id)
     {
-        $user = auth()->user();
-        $vendor = Vendor::where('user_id', $user->id)->first();
+        //get map from DeliveryTracking by package_id
+        $tracking = Package::find($id)->tracking;
 
-        if (!$vendor) {
-            return $this->failed(
-                null,
-                'Vendor Not Found',
-                'No vendor associated with the current user.',
-                404
-            );
-        }
-
-        $package = Package::query()
-            ->with(['vendor', 'shipment', 'invoice', 'location', 'customer'])
-            ->where('vendor_id', $vendor->id) // Ensure the package belongs to this vendor
-            ->find($id);
-
-        if (!$package) {
-            return $this->failed(
-                null,
-                'Package Not Found',
-                'The requested package does not exist or does not belong to your vendor.',
-                404
-            );
-        }
-
-        if ($package->invoice) {
-            $driver = Driver::find($package->invoice->driver_id);
-            if ($driver) {
-                $package->driver = $driver;
-            }
-        }
-
-        return $this->success(
-            PackageShowResource::make($package),
-            'Package Retrieved',
-            'The package details have been retrieved successfully.'
-        );
+        
     }
 }

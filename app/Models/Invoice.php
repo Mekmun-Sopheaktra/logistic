@@ -10,10 +10,11 @@ class Invoice extends Model
     use HasFactory;
 
     // Define the table name (optional if it's the plural form of the model name)
-    protected $table = 'invoice';
+    protected $table = 'invoices';
 
     // Define the fillable attributes to protect against mass assignment
     protected $fillable = [
+        'vendor_invoice_id',
         'customer_id',
         'vendor_id',
         'employee_id',
@@ -56,6 +57,12 @@ class Invoice extends Model
     public function package()
     {
         return $this->belongsTo(Package::class);
+    }
+
+    //belong to vendor invoice
+    public function vendorInvoice()
+    {
+        return $this->belongsTo(VendorInvoice::class);
     }
 
     // Optionally, you can define the cast for 'date' and 'total' if needed

@@ -37,5 +37,8 @@ Route::prefix('delivery')->group(function () {
             Route::post('/pickup', [DeliveryHomeController::class, 'pickupPackage'])->name('delivery.pickup-package');
             Route::post('/delivered', [DeliveryHomeController::class, 'deliveredPackage'])->name('delivery.delivered-package');
         });
+
+        //realtime tracking post
+        Route::post('/tracking', [DeliveryHomeController::class, 'realtimeTracking'])->name('delivery.realtime-tracking');
     });
 });
