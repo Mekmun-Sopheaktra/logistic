@@ -88,6 +88,13 @@ class DriverManagementController extends Controller
             return $this->failed(null, 'One or more invoices not found', 'Invoice not found', 404);
         }
 
+        // Check if invoices are already assigned to a vendor invoice
+        $assignedInvoices = Invoice::whereIn('id', $invoiceIds)->whereNotNull('vendor_invoice_id')->pluck('id')->toArray();
+        if (!empty($assignedInvoices)) {
+            return $this->failed(['already_assigned_invoice_ids' => $assignedInvoices],
+                'One or more invoices are already assigned to a vendor invoice', 'Invoice already assigned', 400);
+        }
+
         // Generate random invoice number
         $randomNumber = 'INV-' . rand(1000, 9999);
 
