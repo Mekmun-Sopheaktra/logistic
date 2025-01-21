@@ -28,7 +28,7 @@ class InvoiceController extends Controller
             try {
                 $dateFilter = Carbon::parse($dateFilter)->format('Y-m-d');
             } catch (\Exception $e) {
-                return $this->error('Invalid date format.', 422);
+                return $this->failed('Invalid date format.', 422);
             }
         }
 
@@ -97,19 +97,59 @@ class InvoiceController extends Controller
     public function vendorInvoice()
     {
         $user = auth()->user();
+        if (!$user || !$user->vendor) {
+            return $this->failed('Unauthorized access.', 403);
+        }
+
         $perPage = request()->query('per_page', config('pagination.per_page', 10));
-        $dateFilter = request()->query('date');
+        $dateFilter = request()->query('date', Carbon::now('Asia/Phnom_Penh')->toDateString());
         $vendorId = $user->vendor->id;
 
-        //Vendor invoices
+        // Vendor invoices
         $vendorInvoices = VendorInvoice::query()
             ->where('vendor_id', $vendorId)
             ->with([
-                'vendor',
-                'invoice',
+                'vendor', // Load the vendor details
+                'invoice.package' // Only load the package related to invoice
             ])
             ->when($dateFilter, fn($query, $date) => $query->whereDate('created_at', $date))
             ->paginate($perPage);
+
+        // Add package count summary for each invoice
+        $vendorInvoices->getCollection()->transform(function ($vendorInvoice) {
+            $packageCounts = [
+                'total' => 0,
+                'completed' => 0,
+                'pending' => 0,
+                'in_transit' => 0,
+                'cancelled' => 0,
+            ];
+
+            foreach ($vendorInvoice->invoice as $invoice) {
+                if ($invoice->package) {
+                    $packageCounts['total']++;
+
+                    switch ($invoice->package->status) {
+                        case 'completed':
+                            $packageCounts['completed']++;
+                            break;
+                        case 'pending':
+                            $packageCounts['pending']++;
+                            break;
+                        case 'in_transit':
+                            $packageCounts['in_transit']++;
+                            break;
+                        case 'cancelled':
+                            $packageCounts['cancelled']++;
+                            break;
+                    }
+                }
+            }
+
+            // Attach package summary to the invoice
+            $vendorInvoice->package_summary = $packageCounts;
+            return $vendorInvoice;
+        });
 
         return $this->success($vendorInvoices, 'List of vendor invoices.');
     }
@@ -118,16 +158,64 @@ class InvoiceController extends Controller
     public function vendorInvoiceShow($id)
     {
         $user = auth()->user();
-        $vendorId = $user->vendor->id;
 
-        $vendorInvoice = VendorInvoice::query()
-            ->where('vendor_id', $vendorId)
+        if (!$user || !$user->vendor) {
+            return $this->failed('Unauthorized access.', 403);
+        }
+
+        $vendorId = $user->vendor->id;
+        $dateFilter = request()->query('date');
+
+        $vendorInvoice = VendorInvoice::where('vendor_id', $vendorId)
             ->with([
                 'vendor',
                 'invoice',
-
+                'invoice.customer',
+                'invoice.driver',
+                'invoice.package',
             ])
-            ->findOrFail($id);
+            ->when($dateFilter, function ($query, $date) {
+                return $query->whereDate('created_at', $date);
+            })
+            ->find($id);
+
+        if (!$vendorInvoice) {
+            return $this->failed('Vendor invoice not found.', 404);
+        }
+
+        // Initialize package count
+        $packageCounts = [
+            'total' => 0,
+            'completed' => 0,
+            'pending' => 0,
+            'in_transit' => 0,
+            'cancelled' => 0,
+        ];
+
+        // Count package statuses
+        foreach ($vendorInvoice->invoice as $invoice) {
+            if ($invoice->package) {
+                $packageCounts['total']++;
+
+                switch ($invoice->package->status) {
+                    case 'completed':
+                        $packageCounts['completed']++;
+                        break;
+                    case 'pending':
+                        $packageCounts['pending']++;
+                        break;
+                    case 'in_transit':
+                        $packageCounts['in_transit']++;
+                        break;
+                    case 'cancelled':
+                        $packageCounts['cancelled']++;
+                        break;
+                }
+            }
+        }
+
+        // Add counts to the response
+        $vendorInvoice->package_summary = $packageCounts;
 
         return $this->success($vendorInvoice, 'Vendor invoice details.');
     }
