@@ -492,7 +492,7 @@ class PackageController extends Controller
         //get delivery_tracking
         $delivery_tracking = DeliveryTracking::query()
             ->where('package_id', $id)
-            ->get();
+            ->first();
 
         if (!$delivery_tracking) {
             return $this->failed(
