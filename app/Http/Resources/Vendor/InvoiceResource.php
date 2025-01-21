@@ -17,7 +17,7 @@ class InvoiceResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'invoice_number' => $this->number,
+            'invoice_number' => $this->invoice_number,
             'date' => Carbon::parse($this->date)->format('d/m/Y H:i') ?? null,
             'total' => $this->total,
             'note' => $this->note,

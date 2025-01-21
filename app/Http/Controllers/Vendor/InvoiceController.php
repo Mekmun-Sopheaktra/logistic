@@ -125,9 +125,10 @@ class InvoiceController extends Controller
             ->with([
                 'vendor',
                 'invoice',
+
             ])
             ->findOrFail($id);
 
-        return $this->success(new InvoiceResource($vendorInvoice), 'Vendor invoice details.');
+        return $this->success($vendorInvoice, 'Vendor invoice details.');
     }
 }
