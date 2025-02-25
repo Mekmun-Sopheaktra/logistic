@@ -23,6 +23,9 @@ return new class extends Migration
             $table->date('dob')->nullable(); // Optional date of birth
             $table->string('gender', 10)->nullable(); // Gender (optional, e.g., Male/Female/Other)
             $table->text('address')->nullable(); // Full address (optional)
+            //latitude and longitude
+            $table->string('lat')->nullable();
+            $table->string('lng')->nullable();
             $table->string('contact_number', 20)->nullable(); // Contact number (optional)
             $table->string('image')->nullable(); // Optional profile image
             $table->string("bank_name")->nullable();

@@ -71,6 +71,8 @@ class AuthController extends Controller
                 'dob' => 'nullable|date',
                 'gender' => 'nullable|string|in:male,female,other',
                 'address' => 'nullable|string',
+                'lat' => 'nullable|string',
+                'lng' => 'nullable|string',
                 'contact_number' => 'nullable|string|max:20',
                 'image' => 'nullable|string|max:255',
                 'bank_name' => 'nullable|string|max:255',
@@ -93,7 +95,7 @@ class AuthController extends Controller
             $data['password'] = bcrypt($data['password']);
 
             // Default account status to active if not provided
-            $data['account_status'] = $data['account_status'] ?? 'active';
+            $data['account_status'] = $data['account_status'] ?? 1;
 
             // Create the user
             $user = User::create([
@@ -117,6 +119,8 @@ class AuthController extends Controller
                     'dob' => $data['dob'] ?? null,
                     'gender' => $data['gender'] ?? null,
                     'address' => $data['address'] ?? null,
+                    'lat' => $data['lat'] ?? null,
+                    'lng' => $data['lng'] ?? null,
                     'contact_number' => $data['contact_number'] ?? null,
                     'image' => $data['image'] ?? null,
                     'bank_name' => $data['bank_name'] ?? null,

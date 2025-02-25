@@ -1,23 +1,18 @@
 <?php
 
-use App\Http\Controllers\Auth\UserAuthController;
-
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompoundController;
-//use App\Http\Controllers\CompoundProductController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ImportController;
-use App\Http\Controllers\RevenueController;
-use App\Http\Controllers\StockAlertController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\BrandController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StockAlertController;
 use App\Http\Controllers\SupplierController;
+
+//use App\Http\Controllers\CompoundProductController;
 
 /*
 |--------------------------------------------------------------------------

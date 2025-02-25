@@ -3,6 +3,7 @@
 use App\Http\Controllers\Delivery\AuthController;
 use App\Http\Controllers\Delivery\DeliveryHomeController;
 use App\Http\Controllers\Delivery\ExpressController;
+use App\Http\Controllers\Delivery\MapController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -40,5 +41,10 @@ Route::prefix('delivery')->group(function () {
 
         //realtime tracking post
         Route::post('/tracking', [DeliveryHomeController::class, 'realtimeTracking'])->name('delivery.realtime-tracking');
+
+        //search map by package number
+        Route::prefix('map')->group(function () {
+            Route::get('/{package_number}', [MapController::class, 'searchMap'])->name('delivery.map-search');
+        });
     });
 });

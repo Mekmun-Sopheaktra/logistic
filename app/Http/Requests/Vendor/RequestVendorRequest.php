@@ -31,6 +31,8 @@ class RequestVendorRequest extends FormRequest
             'dob' => 'nullable|date',
             'gender' => 'nullable|string|in:Male,Female,Other',
             'address' => 'nullable|string',
+            'lat' => 'nullable|string',
+            'lng' => 'nullable|string',
             'contact_number' => 'nullable|string|max:20',
             'image' => 'nullable|string',
             'bank_name' => 'nullable|string|max:255',

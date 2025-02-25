@@ -43,7 +43,7 @@ class AuthController extends Controller
             'role' => ConstUserRole::DELIVERY,
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
-            'account_status' => 'active', // Default account status
+            'account_status' => 1, // Default account status
         ]);
 
         // Dispatch email verification notification

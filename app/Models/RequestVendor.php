@@ -26,6 +26,8 @@ class RequestVendor extends Model
         'dob',
         'gender',
         'address',
+        'lat',
+        'lng',
         'contact_number',
         'image',
         'bank_name',
