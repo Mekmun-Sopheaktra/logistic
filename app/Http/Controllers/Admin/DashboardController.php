@@ -70,35 +70,26 @@ class DashboardController extends Controller
             ->orderBy('month')
             ->get();
 
-// Define month labels for Vue chart
         $monthLabels = [
             1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April',
             5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August',
             9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'
         ];
 
-// Initialize an array to ensure all months are included with zero values
-        $months = collect();
-        for ($i = 11; $i >= 0; $i--) {
-            $date = now()->subMonths($i);
-            $months->put($date->month, [
-                'month' => $monthLabels[$date->month],
-                'total' => 0
-            ]);
-        }
+        // Generate an array covering all months from Jan to Dec
+        $months = collect(array_combine(range(1, 12), array_map(fn($m) => [
+            'month' => $monthLabels[$m],
+            'total' => 0
+        ], range(1, 12))));
 
-// Map query results into the initialized months
+        // Fill data from the query
         $rawData->each(function ($item) use ($months) {
-            $months->put($item->month, [
-                'month' => $months[$item->month]['month'],
-                'total' => $item->total
-            ]);
+            $months[$item->month]['total'] = $item->total;
         });
 
         return [
             'labels' => $months->pluck('month')->toArray(),
             'data' => $months->pluck('total')->toArray()
         ];
-
     }
 }
