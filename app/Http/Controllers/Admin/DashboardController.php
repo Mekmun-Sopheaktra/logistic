@@ -48,11 +48,7 @@ class DashboardController extends Controller
         }
 
         //package graph logic from Package model count by month for last 12 months
-        $package_per_month = Package::query()
-            ->selectRaw('count(id) as total, MONTH(created_at) as month')
-            ->where('created_at', '>=', now()->subMonths(12))
-            ->groupBy('month')
-            ->get();
+        $package_per_month = $this->packageChart();
 
         return $this->success([
             'total_users' => $totalUsers,
@@ -62,5 +58,44 @@ class DashboardController extends Controller
             'package_per_month' => $package_per_month,
             'recent_vendors' => array_slice($vendorsData, 0, 2),
         ], 'Dashboard', 'Dashboard data fetched successfully');
+    }
+
+    private function packageChart()
+    {
+        $rawData = Package::query()
+            ->selectRaw('COUNT(id) as total, YEAR(created_at) as year, MONTH(created_at) as month')
+            ->where('created_at', '>=', now()->subMonths(12))
+            ->groupBy('year', 'month')
+            ->orderBy('year')
+            ->orderBy('month')
+            ->get();
+
+// Define month labels for Vue chart
+        $monthLabels = [
+            1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April',
+            5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August',
+            9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'
+        ];
+
+// Initialize an array to ensure all months are included with zero values
+        $months = collect();
+        for ($i = 11; $i >= 0; $i--) {
+            $date = now()->subMonths($i);
+            $months->put($date->month, [
+                'month' => $monthLabels[$date->month],
+                'total' => 0
+            ]);
+        }
+
+// Map query results into the initialized months
+        $rawData->each(function ($item) use ($months) {
+            $months->put($item->month, [
+                'month' => $months[$item->month]['month'],
+                'total' => $item->total
+            ]);
+        });
+
+        return $months->pluck('total');
+
     }
 }
