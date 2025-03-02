@@ -33,6 +33,7 @@ class PackageFactory extends Factory
             'shipment_id' => 1,
             'invoice_id' => 1,
             'status' => $this->faker->randomElement(['completed', 'pending', 'in_transit', 'cancelled']),
+            'created_at' => $this->faker->dateTimeBetween('-12 months', 'now'),
         ];
     }
 }
