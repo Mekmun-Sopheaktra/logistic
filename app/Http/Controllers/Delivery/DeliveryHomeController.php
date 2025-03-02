@@ -10,9 +10,11 @@ use App\Models\DeliveryTracking;
 use App\Models\Driver;
 use App\Models\Invoice;
 use App\Models\Package;
+use App\Models\Revenue;
 use App\Models\Shipment;
 use App\Traits\BaseApiResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class DeliveryHomeController extends Controller
 {
@@ -103,7 +105,20 @@ class DeliveryHomeController extends Controller
         Shipment::query()->where('package_id', $package_id)->update(['status' => ConstShipmentStatus::COMPLETED]);
         //update delivery tracking status to delivered
         DeliveryTracking::query()->where('package_id', $package_id)->update(['status' => ConstPackageStatus::COMPLETED]);
-        return $this->success(null,'Package delivered successfully');
+        //query delivery_fee from shipment by package_id
+        $delivery_fee = Shipment::query()->where('package_id', $package_id)->first()->delivery_fee;
+        //add delivery_fee to revenue
+        $revenue = Revenue::create([
+            'name' => 'Delivery Fee' . Carbon::now()->format('Y-m-d'),
+            'description' => $driver->name . 'Delivery Fee' . Carbon::now()->format('Y-m-d') . 'Package ID' . $package_id,
+            'amount' => $delivery_fee,
+        ]);
+
+        return $this->success([
+            'revenue' => $revenue,
+            'driver' => $driver,
+            'package_id' => $package_id,
+        ],'Package delivered successfully');
     }
 
     //realtimeTracking

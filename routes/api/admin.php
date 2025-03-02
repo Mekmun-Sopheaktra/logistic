@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DeliveryUserController;
+use App\Http\Controllers\Admin\InvoiceController;
+use App\Http\Controllers\Admin\VendorUserController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->group(function () {
@@ -20,5 +23,23 @@ Route::prefix('admin')->group(function () {
         //dashboard
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
+        Route::get('/invoice', [InvoiceController::class, 'index'])->name('admin.invoice');
+
+        //user management
+        Route::prefix('vendors')->group(function () {
+            Route::get('/', [VendorUserController::class, 'index'])->name('admin.users');
+            Route::post('/', [VendorUserController::class, 'store'])->name('admin.users.store');
+            Route::get('/{id}', [VendorUserController::class, 'show'])->name('admin.users.show');
+            Route::post('/{id}', [VendorUserController::class, 'update'])->name('admin.users.update');
+            Route::delete('/{id}', [VendorUserController::class, 'destroy'])->name('admin.users.delete');
+        });
+
+        Route::prefix('drivers')->group(function () {
+            Route::get('/', [DeliveryUserController::class, 'index'])->name('drivers.users');
+            Route::post('/', [DeliveryUserController::class, 'store'])->name('drivers.users.store');
+            Route::get('/{id}', [DeliveryUserController::class, 'show'])->name('drivers.users.show');
+            Route::post('/{id}', [DeliveryUserController::class, 'update'])->name('drivers.users.update');
+            Route::delete('/{id}', [DeliveryUserController::class, 'destroy'])->name('drivers.users.delete');
+        });
     });
 });
