@@ -95,7 +95,10 @@ class DashboardController extends Controller
             ]);
         });
 
-        return $months->pluck('total');
+        return [
+            'labels' => $months->pluck('month')->toArray(),
+            'data' => $months->pluck('total')->toArray()
+        ];
 
     }
 }
