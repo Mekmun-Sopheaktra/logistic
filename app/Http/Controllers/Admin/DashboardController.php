@@ -76,15 +76,17 @@ class DashboardController extends Controller
             9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'
         ];
 
-        // Generate an array covering all months from Jan to Dec
-        $months = collect(array_combine(range(1, 12), array_map(fn($m) => [
-            'month' => $monthLabels[$m],
-            'total' => 0
-        ], range(1, 12))));
+        // Create a collection with all months from January to December
+        $months = collect(range(1, 12))->mapWithKeys(fn($m) => [
+            $m => ['month' => $monthLabels[$m], 'total' => 0]
+        ]);
 
-        // Fill data from the query
+        // Populate the data from the query results
         $rawData->each(function ($item) use ($months) {
-            $months[$item->month]['total'] = $item->total;
+            $months->put($item->month, [
+                'month' => $months[$item->month]['month'],
+                'total' => $item->total
+            ]);
         });
 
         return [
