@@ -37,7 +37,7 @@ class DashboardController extends Controller
                 'vendor_name' => Vendor::query()->where('user_id', $vendor->id)->first()->first_name . ' ' . Vendor::query()->where('user_id', $vendor->id)->first()->last_name,
                 'vendor_address' => Vendor::query()->where('user_id', $vendor->id)->first()->address,
                 'total_delivery' => Package::query()->where('vendor_id', $vendor->id)->where('status', 'completed')->count(),
-                $amount = Package::query()
+                'amount' => $amount = Package::query()
                     ->where('vendor_id', $vendor->id)
                     ->where('status', 'completed')
                     ->with('shipment')
