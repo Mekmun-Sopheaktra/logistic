@@ -26,7 +26,7 @@ class DashboardController extends Controller
         $totalPendingPackages = Package::query()->where('status', 'pending')->count();
 
         //total customers count
-        $totalCustomers = Customer::query()->count();
+        $totalUsers = User::query()->where('role', ConstUserRole::VENDOR)->count() + User::query()->where('role', ConstUserRole::DELIVERY)->count();
 
         $vendors = User::query()->where('role', ConstUserRole::VENDOR)->get();
 
@@ -34,7 +34,7 @@ class DashboardController extends Controller
         foreach ($vendors as $vendor) {
             $vendorData = [
                 'vendor_id' => $vendor->id,
-                'vendor_name' => $vendor->name,
+                'vendor_name' => Vendor::query()->where('user_id', $vendor->id)->first()->first_name . ' ' . Vendor::query()->where('user_id', $vendor->id)->first()->last_name,
                 'vendor_address' => Vendor::query()->where('user_id', $vendor->id)->first()->address,
                 'total_delivery' => Package::query()->where('vendor_id', $vendor->id)->where('status', 'completed')->count(),
                 $amount = Package::query()
@@ -55,12 +55,12 @@ class DashboardController extends Controller
             ->get();
 
         return $this->success([
-            'total_customers' => $totalCustomers,
+            'total_users' => $totalUsers,
             'total_packages' => $totalPackages,
             'total_vendors' => $totalVendors,
             'total_sales' => $totalCompletedPackages,
             'package_per_month' => $package_per_month,
-            'recent_vendors' => $vendorsData,
+            'recent_vendors' => array_slice($vendorsData, 0, 2),
         ], 'Dashboard', 'Dashboard data fetched successfully');
     }
 }
