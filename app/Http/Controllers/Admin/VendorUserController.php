@@ -25,7 +25,7 @@ class VendorUserController extends Controller
         $vendors = Vendor::query()
             ->with(['user'])
             //search id or name
-            ->when($search, fn($query, $search) => $query->where('id', $search)->orWhere('name', 'like', "%$search%"))
+            ->when($search, fn($query, $search) => $query->where('id', $search))
             ->paginate($per_page);
 
         return $this->success($vendors, 'Vendors', 'Vendors data fetched successfully');
