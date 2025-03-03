@@ -31,6 +31,8 @@ class VendorResource extends JsonResource
             'bank_number' => $this->bank_number,
             'status' => $this->user->account_status,
             'email' => $this->user->email,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }
