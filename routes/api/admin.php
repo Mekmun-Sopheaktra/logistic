@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DeliveryUserController;
 use App\Http\Controllers\Admin\InvoiceController;
+use App\Http\Controllers\Admin\TrackingController;
 use App\Http\Controllers\Admin\VendorUserController;
 use Illuminate\Support\Facades\Route;
 
@@ -40,6 +41,12 @@ Route::prefix('admin')->group(function () {
             Route::get('/{id}', [DeliveryUserController::class, 'show'])->name('drivers.users.show');
             Route::post('/{id}', [DeliveryUserController::class, 'update'])->name('drivers.users.update');
             Route::delete('/{id}', [DeliveryUserController::class, 'destroy'])->name('drivers.users.delete');
+        });
+
+        //tracking
+        Route::prefix('tracking')->group(function () {
+            Route::get('/', [TrackingController::class, 'index'])->name('drivers.tracking');
+            Route::get('/{id}', [TrackingController::class, 'show'])->name('drivers.tracking.show');
         });
     });
 });
