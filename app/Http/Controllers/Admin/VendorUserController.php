@@ -178,7 +178,7 @@ class VendorUserController extends Controller
         if (!$vendor) {
             return $this->failed(null, 'Vendor Not Found', 'Vendor not found', 404);
         }
-        return $this->success($vendor, 'Vendor', 'Vendor data fetched successfully');
+        return $this->success(VendorResource::make($vendor), 'Vendor', 'Vendor data fetched successfully');
     }
 
     //destroy

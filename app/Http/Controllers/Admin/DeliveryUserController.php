@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Constants\ConstUserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\DeliveryResource;
+use App\Http\Resources\Admin\VendorResource;
+use App\Http\Resources\Vendor\DriverResource;
 use App\Mail\VendorRegistrationMail;
 use App\Models\Driver;
 use App\Models\User;
@@ -42,7 +44,7 @@ class DeliveryUserController extends Controller
                 'next_page_url' => $vendors->nextPageUrl(),
                 'prev_page_url' => $vendors->previousPageUrl(),
             ],
-        ], 'Drivers', 'Drivers data fetched successfully');
+        ], 'Drivers', 'DriversVendorResource data fetched successfully');
     }
 
     public function store(Request $request)
@@ -170,7 +172,7 @@ class DeliveryUserController extends Controller
     {
         $vendor = Driver::with(['user'])->find($id);
 
-        return $this->success($vendor, 'Driver', 'Driver data fetched successfully');
+        return $this->success(DriverResource::make($vendor), 'Driver', 'Driver data fetched successfully');
     }
 
     //destroy
