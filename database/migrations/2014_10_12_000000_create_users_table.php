@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('email')->unique(); // Unique email address
             $table->timestamp('email_verified_at')->nullable(); // Email verification timestamp
             $table->string('password'); // Password for authentication
-            $table->string('account_status')->default(config('settings.account_status.active'));
+            $table->string('account_status')->default(1);
             $table->rememberToken(); // Token for "remember me" functionality
             $table->timestamps(); // Created at and updated at timestamps
         });

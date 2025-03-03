@@ -23,7 +23,7 @@ class UserFactory extends Factory
             'email' => "vendor@example.com",
             'email_verified_at' => now(),
             'password' => bcrypt('password'), // Default password
-            'account_status' => true,
+            'account_status' => 1,
             'remember_token' => Str::random(10),
         ];
     }

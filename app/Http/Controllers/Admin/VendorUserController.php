@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Constants\ConstUserRole;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Admin\VendorResource;
 use App\Mail\VendorRegistrationMail;
 use App\Models\User;
 use App\Models\Vendor;
@@ -24,11 +25,22 @@ class VendorUserController extends Controller
 
         $vendors = Vendor::query()
             ->with(['user'])
-            //search id or name
             ->when($search, fn($query, $search) => $query->where('id', $search))
             ->paginate($per_page);
 
-        return $this->success($vendors, 'Vendors', 'Vendors data fetched successfully');
+        return $this->success([
+            'data' => VendorResource::collection($vendors),
+            'paginate' => [
+                'current_page' => $vendors->currentPage(),
+                'per_page' => $vendors->perPage(),
+                'total' => $vendors->total(),
+                'last_page' => $vendors->lastPage(),
+                'first_page_url' => $vendors->url(1),
+                'last_page_url' => $vendors->url($vendors->lastPage()),
+                'next_page_url' => $vendors->nextPageUrl(),
+                'prev_page_url' => $vendors->previousPageUrl(),
+            ],
+        ], 'Vendors', 'Vendors data fetched successfully');
     }
 
     public function store(Request $request)
