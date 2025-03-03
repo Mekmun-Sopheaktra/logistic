@@ -28,7 +28,7 @@ class VendorUserController extends Controller
         $vendors = Vendor::query()
             ->with(['user'])
             ->when($search, fn($query, $search) => $query->where('id', $search))
-            ->when($date, fn($query, $date) => $query->whereDate('dob', $date))
+            ->when($date, fn($query, $date) => $query->whereDate('created_at', $date))
             ->when($status, fn($query, $status) => $query->whereHas('user', fn($query) => $query->where('account_status', $status)))
             ->paginate($per_page);
 
