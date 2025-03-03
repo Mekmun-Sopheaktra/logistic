@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Admin;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -30,8 +31,8 @@ class DeliveryResource extends JsonResource
             'bank_number' => $this->bank_number,
             'status' => $this->user->account_status,
             'email' => $this->user->email,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s'),
         ];
     }
 }
