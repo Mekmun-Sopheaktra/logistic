@@ -22,12 +22,13 @@ class VendorUserController extends Controller
     {
         $per_page = request()->query('per_page', config('pagination.per_page', 10));
         $search = request()->query('search'); // search by customer phone
-        //status 1 or 0
+        $date = request()->query('date'); // search by date
         $status = request()->query('status');
 
         $vendors = Vendor::query()
             ->with(['user'])
             ->when($search, fn($query, $search) => $query->where('id', $search))
+            ->when($date, fn($query, $date) => $query->whereDate('created_at', $date))
             ->when($status, fn($query, $status) => $query->whereHas('user', fn($query) => $query->where('account_status', $status)))
             ->paginate($per_page);
 
