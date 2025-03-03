@@ -172,6 +172,10 @@ class DeliveryUserController extends Controller
     {
         $vendor = Driver::with(['user'])->find($id);
 
+        if (!$vendor) {
+            return $this->failed(null, 'Driver Not Found', 'Driver not found', 404);
+        }
+
         return $this->success(DriverResource::make($vendor), 'Driver', 'Driver data fetched successfully');
     }
 
