@@ -18,22 +18,22 @@ class MapResource extends JsonResource
         return [
             'id' => $this->id,
             'vendor' => [
-                'name' => $this->vendor->first_name . ' ' . $this->vendor->last_name,
-                'phone' => $this->vendor->contact_number,
-                'address' => $this->vendor->address,
-                'lat' => $this->vendor->lat,
-                'lng' => $this->vendor->lng,
+                'name' => $this->vendor?->first_name . ' ' . $this->vendor?->last_name,
+                'phone' => $this->vendor?->contact_number,
+                'address' => $this->vendor?->address,
+                'lat' => $this->vendor?->lat,
+                'lng' => $this->vendor?->lng,
             ],
             'customer' => [
-                'name' => $this->customer->first_name . ' ' . $this->customer->last_name,
-                'phone' => $this->customer->phone,
-                'address' => $this->location->location,
-                'lat' => $this->location->lat,
-                'lng' => $this->location->lng,
+                'name' => $this->customer?->first_name . ' ' . $this->customer?->last_name,
+                'phone' => $this->customer?->phone,
+                'address' => $this->location?->location,
+                'lat' => $this->location?->lat,
+                'lng' => $this->location?->lng,
             ],
             'package' => [
-                'delivery_fee' => $this->shipment->delivery_fee,
-                'status' => $this->shipment->status,
+                'delivery_fee' => $this->shipment?->delivery_fee,
+                'status' => $this->shipment?->status,
             ]
         ];
     }
