@@ -122,7 +122,7 @@ class DeliveryUserController extends Controller
             'bank_name' => 'nullable|string',
             'bank_number' => 'nullable|string',
 
-            'password' => 'required|confirmed|string|min:6',
+            'password' => 'required|string|min:6',
         ]);
 
         $driver = Driver::find($id);
