@@ -64,6 +64,7 @@ class DeliveryUserController extends Controller
             'bank_name' => 'nullable|string',
             'bank_number' => 'nullable|string',
             'cv' => 'nullable',
+            'address' => 'nullable|string',
 
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
@@ -99,13 +100,14 @@ class DeliveryUserController extends Controller
             'driver_description' => $request->business_description,
             'dob' => $request->dob,
             'gender' => $request->gender,
-            'zone' => $request->address,
+            'zone' => $request->zone,
             'contact_number' => $request->contact_number,
             'telegram_contact' => $request->telegram_contact,
             'image' => $image ?? '',
             'bank_name' => $request->bank_name,
             'bank_number' => $request->bank_number,
             'cv' => $cv ?? '',
+            'address' => $request->address,
             'user_id' => $user->id,
         ]);
 
@@ -131,6 +133,7 @@ class DeliveryUserController extends Controller
             'bank_name' => 'nullable|string',
             'bank_number' => 'nullable|string',
             'cv' => 'nullable',
+            'address' => 'nullable|string',
 
             'password' => 'nullable|string|min:6',
         ]);
@@ -167,13 +170,14 @@ class DeliveryUserController extends Controller
             'driver_description' => $request->business_description,
             'dob' => $request->dob,
             'gender' => $request->gender,
-            'zone' => $request->address,
+            'zone' => $request->zone,
             'contact_number' => $request->contact_number,
             'telegram_contact' => $request->telegram_contact,
             'image' => $image ?? '',
             'bank_name' => $request->bank_name,
             'bank_number' => $request->bank_number,
             'cv' => $cv ?? '',
+            'address' => $request->address,
         ]);
 
         //get user
