@@ -16,6 +16,7 @@ use App\Traits\UploadImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class DeliveryUserController extends Controller
 {
@@ -77,7 +78,7 @@ class DeliveryUserController extends Controller
         //cv image
         $cv = null;
         if ($request->hasFile('cv')) {
-            $cv = $this->upload($request, 'cv');
+            $cv = Storage::disk('public')->put('cv', $request->file('cv'));
         }
 
         $password = Hash::make($request->password);
@@ -148,7 +149,7 @@ class DeliveryUserController extends Controller
         //cv image
         $cv = null;
         if ($request->hasFile('cv')) {
-            $cv = $this->upload($request, 'cv');
+            $cv = Storage::disk('public')->put('cv', $request->file('cv'));
         }
 
         $password = Hash::make($request->password);
