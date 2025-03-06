@@ -46,4 +46,10 @@ class Driver extends Model
     protected $casts = [
         'dob' => 'date',
     ];
+
+    //cv
+    public function getCvAttribute($value)
+    {
+        return $value ? asset('storage/' . $value) : null;
+    }
 }
