@@ -172,7 +172,7 @@ class VendorUserController extends Controller
 
         Mail::to($user->email)->send(new VendorRegistrationMail($request->password));
 
-        return $this->success($vendor, 'Vendor Updated', 'Vendor updated successfully');
+        return $this->success(VendorResource::make($vendor), 'Vendor Updated', 'Vendor updated successfully');
     }
 
     //show

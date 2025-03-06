@@ -192,7 +192,7 @@ class DeliveryUserController extends Controller
 
         Mail::to($user->email)->send(new VendorRegistrationMail($request->password));
 
-        return $this->success($driver, 'Driver Updated', 'Driver updated successfully');
+        return $this->success(DriverResource::make($driver), 'Driver Updated', 'Driver updated successfully');
     }
 
     //show
