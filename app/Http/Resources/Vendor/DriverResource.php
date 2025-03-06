@@ -32,7 +32,7 @@ class DriverResource extends JsonResource
             'bank_number' => $this->bank_number,
             'cv' => $this->cv,
             'address' => $this->address,
-            'status' => $this->user->account_status,
+            'status' => (int) $this->user->account_status,
             'email' => $this->user->email,
         ];
     }
