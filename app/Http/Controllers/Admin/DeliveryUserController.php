@@ -136,6 +136,7 @@ class DeliveryUserController extends Controller
             'address' => 'nullable|string',
 
             'password' => 'nullable|string|min:6',
+            'status' => 'nullable|boolean',
         ]);
 
         $driver = Driver::find($id);
@@ -160,6 +161,12 @@ class DeliveryUserController extends Controller
         if ($request->password) {
             $driver->user->update([
                 'password' => $password,
+            ]);
+        }
+
+        if ($request->status) {
+            $driver->user->update([
+                'account_status' => $request->status,
             ]);
         }
 
@@ -196,6 +203,9 @@ class DeliveryUserController extends Controller
         if (!$vendor) {
             return $this->failed(null, 'Driver Not Found', 'Driver not found', 404);
         }
+
+        //get user data from vendor
+        $vendor->user;
 
         return $this->success(DriverResource::make($vendor), 'Driver', 'Driver data fetched successfully');
     }
