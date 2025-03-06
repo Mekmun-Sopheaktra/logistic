@@ -32,6 +32,7 @@ class DeliveryResource extends JsonResource
             'status' => $this->user->account_status,
             'email' => $this->user->email,
             'cv' => $this->cv,
+            'address' => $this->address,
             'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s'),
         ];
