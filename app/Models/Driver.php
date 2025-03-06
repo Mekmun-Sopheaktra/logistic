@@ -26,6 +26,7 @@ class Driver extends Model
         'image',
         'bank_name',
         'bank_number',
+        'cv',
         'user_id',
     ];
 

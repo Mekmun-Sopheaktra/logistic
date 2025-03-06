@@ -62,6 +62,7 @@ class DeliveryUserController extends Controller
             'image' => 'nullable',
             'bank_name' => 'nullable|string',
             'bank_number' => 'nullable|string',
+            'cv' => 'nullable',
 
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
@@ -71,6 +72,12 @@ class DeliveryUserController extends Controller
         $image = null;
         if ($request->hasFile('image')) {
             $image = $this->upload($request);
+        }
+
+        //cv image
+        $cv = null;
+        if ($request->hasFile('cv')) {
+            $cv = $this->upload($request, 'cv');
         }
 
         $password = Hash::make($request->password);
@@ -97,6 +104,7 @@ class DeliveryUserController extends Controller
             'image' => $image ?? '',
             'bank_name' => $request->bank_name,
             'bank_number' => $request->bank_number,
+            'cv' => $cv ?? '',
             'user_id' => $user->id,
         ]);
 
@@ -121,6 +129,7 @@ class DeliveryUserController extends Controller
             'image' => 'nullable',
             'bank_name' => 'nullable|string',
             'bank_number' => 'nullable|string',
+            'cv' => 'nullable',
 
             'password' => 'nullable|string|min:6',
         ]);
@@ -134,6 +143,12 @@ class DeliveryUserController extends Controller
         $image = null;
         if ($request->hasFile('image')) {
             $image = $this->updateImage($request, $driver);
+        }
+
+        //cv image
+        $cv = null;
+        if ($request->hasFile('cv')) {
+            $cv = $this->upload($request, 'cv');
         }
 
         $password = Hash::make($request->password);
@@ -157,6 +172,7 @@ class DeliveryUserController extends Controller
             'image' => $image ?? '',
             'bank_name' => $request->bank_name,
             'bank_number' => $request->bank_number,
+            'cv' => $cv ?? '',
         ]);
 
         //get user

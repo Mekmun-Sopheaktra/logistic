@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('image')->nullable(); // Optional profile image
             $table->string("bank_name")->nullable();
             $table->string("bank_number")->nullable();
+            $table->string("cv")->nullable();
             $table->string("user_id");
             $table->timestamps();
         });
