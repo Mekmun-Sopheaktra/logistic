@@ -79,7 +79,10 @@ class DeliveryUserController extends Controller
         //cv image
         $cv = null;
         if ($request->hasFile('cv')) {
-            $cv = Storage::disk('public')->put('cv', $request->file('cv'));
+            $cvPath = $request->file('cv')->store('cv', 'public');
+
+            // Generate the correct file URL, ensuring it does not contain extra base URLs
+            $cv = Storage::url($cvPath);
         }
 
         $password = Hash::make($request->password);
@@ -96,8 +99,8 @@ class DeliveryUserController extends Controller
         $vendor = Driver::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
-            'driver_type' => $request->business_type,
-            'driver_description' => $request->business_description,
+            'driver_type' => $request->driver_type,
+            'driver_description' => $request->driver_description,
             'dob' => $request->dob,
             'gender' => $request->gender,
             'zone' => $request->zone,
@@ -145,15 +148,19 @@ class DeliveryUserController extends Controller
             return $this->failed(null, 'Driver Not Found', 'Driver not found', 404);
         }
 
-        $image = null;
+        $image = $request->image ?? null;
         if ($request->hasFile('image')) {
             $image = $this->updateImage($request, $driver);
         }
 
         //cv image
-        $cv = null;
+        $cv = $request->cv ?? null;
         if ($request->hasFile('cv')) {
-            $cv = Storage::disk('public')->put('cv', $request->file('cv'));
+            // Save the file to the 'public' disk (which is typically the storage/app/public directory)
+            $cvPath = $request->file('cv')->store('cv', 'public');
+
+            // Generate the correct file URL, ensuring it does not contain extra base URLs
+            $cv = Storage::url($cvPath);
         }
 
         $password = Hash::make($request->password);
@@ -164,17 +171,15 @@ class DeliveryUserController extends Controller
             ]);
         }
 
-        if ($request->status) {
-            $driver->user->update([
-                'account_status' => $request->status,
-            ]);
-        }
+        $driver->user->update([
+            'account_status' => $request->status,
+        ]);
 
         $driver->update([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
-            'driver_type' => $request->business_type,
-            'driver_description' => $request->business_description,
+            'driver_type' => $request->driver_type,
+            'driver_description' => $request->driver_description,
             'dob' => $request->dob,
             'gender' => $request->gender,
             'zone' => $request->zone,

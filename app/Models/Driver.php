@@ -50,6 +50,6 @@ class Driver extends Model
     //cv
     public function getCvAttribute($value)
     {
-        return $value ? asset('storage/' . $value) : null;
+        return $value ? asset('' . $value) : null;
     }
 }
