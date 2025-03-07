@@ -22,7 +22,7 @@ class DriverResource extends JsonResource
             'full_name' => $this->first_name . ' ' . $this->last_name,
             'driver_type' => $this->driver_type,
             'driver_description' => $this->driver_description,
-            'dob' =>  Carbon::parse($this->dob)->format('d/m/Y') ?? null,
+            'dob' =>  $this->dob ?? null,
             'gender' => $this->gender,
             'zone' => $this->zone,
             'contact_number' => $this->contact_number,
