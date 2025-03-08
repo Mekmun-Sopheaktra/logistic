@@ -50,7 +50,14 @@ class InvoiceController extends Controller
 
         $invoices = [
             'data' => PackageInvoiceResource::collection($invoiceQuery->paginate($perPage)),
-            'pagination' => $invoiceQuery->paginate($perPage)->toArray()
+            'pagination' => [
+                'total' => $invoiceQuery->count(),
+                'per_page' => $perPage,
+                'current_page' => $invoiceQuery->currentPage(),
+                'last_page' => $invoiceQuery->lastPage(),
+                'from' => $invoiceQuery->firstItem(),
+                'to' => $invoiceQuery->lastItem()
+            ]
         ];
 
         return $this->success($invoices, 'Packages Invoice', 'Packages invoice data fetched successfully');
