@@ -29,15 +29,39 @@ class InvoiceController extends Controller
 
     public function packagesInvoice()
     {
-        //get invoice data from packages relationship with invoice
-        $per_page = request()->query('per_page', config('pagination.per_page', 10));
-        $search = request()->query('search'); // search by customer phone
+        $perPage = request()->query('per_page', config('pagination.per_page', 10));
+        $search = request()->query('search'); // Search by customer phone
         $date = request()->query('date');
-        $invoice = Package::query()
-            ->with(['invoice', 'customer'])
-            ->when($date, fn($query, $date) => $query->whereHas('invoice', fn($query) => $query->whereDate('date', $date)))
-            ->when($search, fn($query, $search) => $query->whereHas('customer', fn($query) => $query->where('phone', 'like', "%$search%")))
-            ->paginate($per_page);
+
+        $invoiceQuery = Package::with(['invoice', 'customer']);
+
+        if ($date) {
+            $invoiceQuery->whereHas('invoice', function ($query) use ($date) {
+                $query->whereDate('created_at', $date);
+            });
+        }
+
+        if ($search) {
+            $invoiceQuery->whereHas('customer', function ($query) use ($search) {
+                $query->where('phone', 'like', "%$search%");
+            });
+        }
+
+        $invoices = $invoiceQuery->paginate($perPage);
+
+        return $this->success($invoices, 'Packages Invoice', 'Packages invoice data fetched successfully');
+    }
+
+
+    //show packages invoice
+    public function showPackagesInvoice($id)
+    {
+        // Get invoice data from packages relationship with invoice
+        $invoice = Package::with(['invoice', 'customer'])->find($id);
+
+        if (!$invoice) {
+            return $this->error('Invoice not found', 404);
+        }
 
         return $this->success($invoice, 'Packages Invoice', 'Packages invoice data fetched successfully');
     }
@@ -45,15 +69,35 @@ class InvoiceController extends Controller
     //vendorInvoice
     public function vendorInvoice()
     {
-        //get invoice data from vendor relationship with invoice
-        $per_page = request()->query('per_page', config('pagination.per_page', 10));
-        $search = request()->query('search'); // search by vendor name
+        // Get invoice data from vendor relationship with invoice
+        $perPage = request()->query('per_page', config('pagination.per_page', 10));
+        $search = request()->query('search'); // Search by invoice number
         $date = request()->query('date');
-        $invoice = VendorInvoice::query()
-            ->with(['vendor'])
-            ->when($date, fn($query, $date) => $query->whereDate('created_at', $date))
-            ->when($search, fn($query, $search) => $query->where('invoice_number', 'like', "%$search%"))
-            ->paginate($per_page);
+
+        $invoiceQuery = VendorInvoice::with(['vendor']);
+
+        if ($date) {
+            $invoiceQuery->whereDate('created_at', $date);
+        }
+
+        if ($search) {
+            $invoiceQuery->where('invoice_number', 'like', "%$search%");
+        }
+
+        $invoices = $invoiceQuery->paginate($perPage);
+
+        return $this->success($invoices, 'Vendor Invoice', 'Vendor invoice data fetched successfully');
+    }
+
+    //show vendor invoice
+    public function showVendorInvoice($id)
+    {
+        // Get invoice data from vendor relationship with invoice
+        $invoice = VendorInvoice::with(['vendor'])->find($id);
+
+        if (!$invoice) {
+            return $this->error('Invoice not found', 404);
+        }
 
         return $this->success($invoice, 'Vendor Invoice', 'Vendor invoice data fetched successfully');
     }
