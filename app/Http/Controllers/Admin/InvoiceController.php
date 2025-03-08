@@ -33,7 +33,7 @@ class InvoiceController extends Controller
         $search = request()->query('search'); // Search by customer phone
         $date = request()->query('date');
 
-        $invoiceQuery = Package::with(['invoice', 'customer']);
+        $invoiceQuery = Package::with(['invoice', 'customer', 'location']);
 
         if ($date) {
             $invoiceQuery->whereHas('invoice', function ($query) use ($date) {
@@ -74,7 +74,7 @@ class InvoiceController extends Controller
         $search = request()->query('search'); // Search by invoice number
         $date = request()->query('date');
 
-        $invoiceQuery = VendorInvoice::with(['vendor']);
+        $invoiceQuery = VendorInvoice::with(['vendor', 'location']);
 
         if ($date) {
             $invoiceQuery->whereDate('created_at', $date);

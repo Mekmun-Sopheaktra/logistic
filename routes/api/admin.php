@@ -24,8 +24,15 @@ Route::prefix('admin')->group(function () {
         //dashboard
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
-        Route::get('/package-invoice', [InvoiceController::class, 'packagesInvoice'])->name('admin.package.invoice');
-        Route::get('/vendor-invoice', [InvoiceController::class, 'vendorInvoice'])->name('admin.vendor.invoice');
+        Route::prefix('/package-invoice')->group(function () {
+            Route::get('/', [InvoiceController::class, 'packagesInvoice'])->name('admin.package.invoice');
+            Route::get('/{id}', [InvoiceController::class, 'showPackagesInvoice'])->name('admin.package.invoice.show');
+        });
+
+        Route::prefix('/vendor-invoice')->group(function () {
+            Route::get('/', [InvoiceController::class, 'vendorInvoice'])->name('admin.vendor.invoice');
+            Route::get('/{id}', [InvoiceController::class, 'showVendorInvoice'])->name('admin.vendor.invoice.show');
+        });
 
         //user management
         Route::prefix('vendors')->group(function () {
