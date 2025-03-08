@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Admin\PackageInvoiceResource;
 use App\Models\Package;
 use App\Models\VendorInvoice;
 use App\Traits\BaseApiResponse;
@@ -47,7 +48,10 @@ class InvoiceController extends Controller
             });
         }
 
-        $invoices = $invoiceQuery->paginate($perPage);
+        $invoices = [
+            'data' => PackageInvoiceResource::collection($invoiceQuery->paginate($perPage)),
+            'pagination' => $invoiceQuery->paginate($perPage)->toArray()
+        ];
 
         return $this->success($invoices, 'Packages Invoice', 'Packages invoice data fetched successfully');
     }
