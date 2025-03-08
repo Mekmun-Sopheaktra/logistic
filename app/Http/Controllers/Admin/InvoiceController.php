@@ -48,9 +48,18 @@ class InvoiceController extends Controller
             });
         }
 
+        $paginate = $invoiceQuery->paginate($perPage);
+
         $invoices = [
-            'data' => PackageInvoiceResource::collection($invoiceQuery->paginate($perPage)),
-            'pagination' => $invoiceQuery->paginate($perPage)
+            'data' => PackageInvoiceResource::collection($paginate), // Use the stored paginated result
+            'pagination' => [
+                'total' => $paginate->total(),
+                'per_page' => $paginate->perPage(),
+                'current_page' => $paginate->currentPage(),
+                'last_page' => $paginate->lastPage(),
+                'from' => $paginate->firstItem(),
+                'to' => $paginate->lastItem()
+            ]
         ];
 
         return $this->success($invoices, 'Packages Invoice', 'Packages invoice data fetched successfully');
