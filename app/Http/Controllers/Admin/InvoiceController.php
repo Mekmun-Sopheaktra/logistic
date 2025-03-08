@@ -27,7 +27,7 @@ class InvoiceController extends Controller
         return $this->failed(null, 'Invalid Tab', 'Invalid tab provided');
     }
 
-    private function packagesInvoice()
+    public function packagesInvoice()
     {
         //get invoice data from packages relationship with invoice
         $per_page = request()->query('per_page', config('pagination.per_page', 10));
@@ -43,7 +43,7 @@ class InvoiceController extends Controller
     }
 
     //vendorInvoice
-    private function vendorInvoice()
+    public function vendorInvoice()
     {
         //get invoice data from vendor relationship with invoice
         $per_page = request()->query('per_page', config('pagination.per_page', 10));

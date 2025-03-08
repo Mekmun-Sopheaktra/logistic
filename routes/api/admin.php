@@ -24,7 +24,8 @@ Route::prefix('admin')->group(function () {
         //dashboard
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
-        Route::get('/invoice', [InvoiceController::class, 'index'])->name('admin.invoice');
+        Route::get('/package-invoice', [InvoiceController::class, 'packagesInvoice'])->name('admin.package.invoice');
+        Route::get('/vendor-invoice', [InvoiceController::class, 'vendorInvoice'])->name('admin.vendor.invoice');
 
         //user management
         Route::prefix('vendors')->group(function () {
