@@ -30,6 +30,8 @@ return new class extends Migration
             $table->unsignedBigInteger('shipment_id')->nullable();
             $table->unsignedBigInteger('invoice_id')->nullable();
             $table->unsignedBigInteger('delivery_tracking_id')->nullable();
+            $table->unsignedBigInteger('branch_id')->nullable();
+            $table->unsignedBigInteger('package_type_id')->nullable();
             $table->enum('status', ['pending', 'in_transit','completed', 'cancelled'])->default('pending');
             $table->timestamps();
         });

@@ -14,6 +14,7 @@ class VendorInvoice extends Model
     protected $fillable = [
         'vendor_id',
         'invoice_number',
+        'description',
         'total',
         'status',
     ];
@@ -30,7 +31,7 @@ class VendorInvoice extends Model
     }
 
     //invoice
-    public function invoice()
+    public function invoices()
     {
         return $this->hasMany(Invoice::class);
     }

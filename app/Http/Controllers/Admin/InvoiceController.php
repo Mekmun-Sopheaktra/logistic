@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UpdatePackageInvoiceRequest;
+use App\Http\Resources\Admin\PackageInvoiceDetailResource;
 use App\Http\Resources\Admin\PackageInvoiceResource;
+use App\Http\Resources\Admin\VendorInvoiceResource;
+use App\Models\Invoice;
 use App\Models\Package;
 use App\Models\VendorInvoice;
 use App\Traits\BaseApiResponse;
@@ -70,13 +74,58 @@ class InvoiceController extends Controller
     public function showPackagesInvoice($id)
     {
         // Get invoice data from packages relationship with invoice
-        $invoice = Package::with(['invoice', 'customer'])->find($id);
+        $invoice = Package::with(['invoice', 'customer', 'location','shipment', 'vendor', 'driver', 'branch', 'packageType'])->find($id);
 
         if (!$invoice) {
             return $this->error('Invoice not found', 404);
         }
 
-        return $this->success($invoice, 'Packages Invoice', 'Packages invoice data fetched successfully');
+        return $this->success(PackageInvoiceDetailResource::make($invoice), 'Packages Invoice', 'Packages invoice data fetched successfully');
+    }
+
+    public function updatePackageInvoice(UpdatePackageInvoiceRequest $request, $id)
+    {
+        logger(json_encode($request->all()));
+
+        // Retrieve the package with related data
+        $invoice = Package::with(['invoice', 'customer', 'location', 'shipment', 'vendor', 'driver', 'branch', 'packageType'])->find($id);
+
+        if (!$invoice) {
+            return $this->error('Invoice not found', 404);
+        }
+
+        // Update package details
+        $invoice->status = $request->input('delivery.status', $invoice->status);
+        $invoice->price = $request->input('package.price', $invoice->price);
+
+        // Update related shipment data if applicable
+        if ($invoice->shipment) {
+            $invoice->shipment->delivery_fee = $request->input('delivery.fee', $invoice->shipment->delivery_fee);
+            $invoice->shipment->save();
+        }
+
+        // Update driver contact details if applicable
+        if ($invoice->driver) {
+            $invoice->driver->contact_number = $request->input('driver.contact', $invoice->driver->contact_number);
+            $invoice->driver->telegram_contact = $request->input('driver.telegram', $invoice->driver->telegram_contact);
+            $invoice->driver->save();
+        }
+
+        // Update the invoice note if the invoice relationship exists
+        if ($invoice->invoice) {
+            $invoice->invoice->note = $request->input('delivery.note', $invoice->invoice->note);
+            $invoice->invoice->save();
+        }
+
+        // Save the package update
+        $invoice->save();
+
+        // Return updated data using the resource
+        return $this->success(
+            PackageInvoiceDetailResource::make($invoice),
+            'Packages Invoice',
+            'Packages invoice updated successfully'
+        );
     }
 
     //vendorInvoice
@@ -87,7 +136,8 @@ class InvoiceController extends Controller
         $search = request()->query('search'); // Search by invoice number
         $date = request()->query('date');
 
-        $invoiceQuery = VendorInvoice::with(['vendor', 'location']);
+        // Query vendor invoices and include related invoices and vendor data
+        $invoiceQuery = VendorInvoice::with(['vendor', 'invoices']);
 
         if ($date) {
             $invoiceQuery->whereDate('created_at', $date);
@@ -97,7 +147,22 @@ class InvoiceController extends Controller
             $invoiceQuery->where('invoice_number', 'like', "%$search%");
         }
 
-        $invoices = $invoiceQuery->paginate($perPage);
+        // Only fetch vendor invoices that have at least one associated invoice
+        $invoiceQuery->whereHas('invoices');
+
+        $paginate = $invoiceQuery->paginate($perPage);
+
+        $invoices = [
+            'data' => VendorInvoiceResource::collection($paginate), // Use the stored paginated result
+            'pagination' => [
+                'total' => $paginate->total(),
+                'per_page' => $paginate->perPage(),
+                'current_page' => $paginate->currentPage(),
+                'last_page' => $paginate->lastPage(),
+                'from' => $paginate->firstItem(),
+                'to' => $paginate->lastItem()
+            ]
+        ];
 
         return $this->success($invoices, 'Vendor Invoice', 'Vendor invoice data fetched successfully');
     }

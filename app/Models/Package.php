@@ -30,6 +30,8 @@ class Package extends Model
         'shipment_id',
         'invoice_id',
         'delivery_tracking_id',
+        'branch_id',
+        'package_type_id',
         'status',
     ];
 
@@ -75,5 +77,17 @@ class Package extends Model
     public function deliveryTracking()
     {
         return $this->hasOne(DeliveryTracking::class);
+    }
+
+    //branch
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    //package_type_id
+    public function packageType()
+    {
+        return $this->belongsTo(PackageType::class);
     }
 }

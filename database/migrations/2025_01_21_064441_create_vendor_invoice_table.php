@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('invoice_number');
             //total
             $table->decimal('total', 10, 2);
+            //Description
+            $table->text('description');
             //status
             $table->string('status');
             $table->timestamps();

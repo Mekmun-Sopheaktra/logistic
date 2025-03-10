@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('employee')->group(function () {
     // ---------------------------------Public routes---------------------------------
+    Route::post('/create-invoice', [DriverManagementController::class, 'createVendorInvoice'])->name('employee.create-invoice');
 
     //auth
     Route::prefix('')->group(function () {
@@ -13,6 +14,5 @@ Route::prefix('employee')->group(function () {
     });
 
     //create vendor invoice
-    Route::post('/create-invoice', [DriverManagementController::class, 'createVendorInvoice'])->name('employee.create-invoice');
 
 });

@@ -27,6 +27,8 @@ Route::prefix('admin')->group(function () {
         Route::prefix('/package-invoice')->group(function () {
             Route::get('/', [InvoiceController::class, 'packagesInvoice'])->name('admin.package.invoice');
             Route::get('/{id}', [InvoiceController::class, 'showPackagesInvoice'])->name('admin.package.invoice.show');
+            //updatePackageInvoice
+            Route::post('/{id}', [InvoiceController::class, 'updatePackageInvoice'])->name('admin.package.invoice.update');
         });
 
         Route::prefix('/vendor-invoice')->group(function () {
