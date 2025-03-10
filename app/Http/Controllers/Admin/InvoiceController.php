@@ -74,7 +74,7 @@ class InvoiceController extends Controller
     public function showPackagesInvoice($id)
     {
         // Get invoice data from packages relationship with invoice
-        $invoice = Package::with(['invoice', 'customer', 'location','shipment', 'vendor', 'driver', 'branch', 'packageType'])->find($id);
+        $invoice = Package::with(['invoice', 'customer', 'location','shipment', 'vendor', 'driver', 'branch', 'package_type'])->find($id);
 
         if (!$invoice) {
             return $this->error('Invoice not found', 404);
@@ -85,10 +85,8 @@ class InvoiceController extends Controller
 
     public function updatePackageInvoice(UpdatePackageInvoiceRequest $request, $id)
     {
-        logger(json_encode($request->all()));
-
         // Retrieve the package with related data
-        $invoice = Package::with(['invoice', 'customer', 'location', 'shipment', 'vendor', 'driver', 'branch', 'packageType'])->find($id);
+        $invoice = Package::with(['invoice', 'customer', 'location', 'shipment', 'vendor', 'driver', 'branch', 'package_type'])->find($id);
 
         if (!$invoice) {
             return $this->error('Invoice not found', 404);
