@@ -18,6 +18,7 @@ class VendorInvoiceResource extends JsonResource
             'id' => $this->id ?? null,
             'invoice_number' => $this->invoice_number ?? null,
             'date' => $this->created_at->format('Y-m-d') ?? null,
+            'vendor_name' => $this->vendor?->first_name . ' ' . $this->vendor?->last_name ?? null,
             'description' => $this->description ?? null,
             'amount' => count($this->invoices) ?? 0,
             'total_invoice' => $this->total ?? 0,

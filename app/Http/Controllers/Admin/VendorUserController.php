@@ -137,7 +137,7 @@ class VendorUserController extends Controller
             return $this->failed(null, 'Vendor Not Found', 'Vendor not found', 404);
         }
 
-        $image = null;
+        $image = $request->image ?? null;
         if ($request->hasFile('image')) {
             $image = $this->updateImage($request, $vendor);
         }

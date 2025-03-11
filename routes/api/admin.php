@@ -64,7 +64,7 @@ Route::prefix('admin')->group(function () {
         //setting
         Route::prefix('setting')->group(function () {
             Route::get('/', [SettingController::class, 'index'])->name('admin.setting');
-            Route::post('/', [SettingController::class, 'store'])->name('admin.setting.store');
+            Route::post('/', [SettingController::class, 'update'])->name('admin.setting.update');
         });
     });
 });
