@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DeliveryUserController;
 use App\Http\Controllers\Admin\InvoiceController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TrackingController;
 use App\Http\Controllers\Admin\VendorUserController;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +58,13 @@ Route::prefix('admin')->group(function () {
         Route::prefix('tracking')->group(function () {
             Route::get('/', [TrackingController::class, 'index'])->name('drivers.tracking');
             Route::get('/{id}', [TrackingController::class, 'show'])->name('drivers.tracking.show');
+        });
+
+
+        //setting
+        Route::prefix('setting')->group(function () {
+            Route::get('/', [SettingController::class, 'index'])->name('admin.setting');
+            Route::post('/', [SettingController::class, 'store'])->name('admin.setting.store');
         });
     });
 });
