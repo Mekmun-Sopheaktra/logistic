@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('username')->unique();
             //image
             $table->string('image')->nullable();
+            //user_id
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
         });
     }
