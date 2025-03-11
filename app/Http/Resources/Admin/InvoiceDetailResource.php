@@ -24,7 +24,7 @@ class InvoiceDetailResource extends JsonResource
             'package_price'    => $this->total,
             'cod'              => $this->package->invoice->status === "unpaid" ? 0 : $this->total,
             'delivery_fee'     => (int) $this->package->shipment?->delivery_fee, // Casting to int
-            'package_status'   => $this->package->invoice->status,
+            'package_status'   => $this->package->status,
         ];
     }
 }
