@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdatePackageInvoiceRequest;
 use App\Http\Resources\Admin\PackageInvoiceDetailResource;
 use App\Http\Resources\Admin\PackageInvoiceResource;
+use App\Http\Resources\Admin\VendorInvoiceDetailResource;
 use App\Http\Resources\Admin\VendorInvoiceResource;
 use App\Models\Invoice;
 use App\Models\Package;
@@ -169,11 +170,18 @@ class InvoiceController extends Controller
     public function showVendorInvoice($id)
     {
         // Get invoice data from vendor relationship with invoice
-        $invoice = VendorInvoice::with(['vendor'])->find($id);
+        $invoice = VendorInvoice::with(['vendor', 'invoices'])->find($id);
+
+        //get package details by invoices package_id
+        $invoice->load(['invoices.package' => function ($query) {
+            $query->with(['customer', 'location', 'shipment', 'vendor', 'driver', 'branch', 'package_type']);
+        }]);
 
         if (!$invoice) {
             return $this->error('Invoice not found', 404);
         }
+
+        $invoice = VendorInvoiceDetailResource::make($invoice);
 
         return $this->success($invoice, 'Vendor Invoice', 'Vendor invoice data fetched successfully');
     }
