@@ -73,6 +73,7 @@ class DriverManagementController extends Controller
             'invoice_ids' => 'required|array',
             'invoice_ids.*' => 'integer|exists:invoices,id',
             'vendor_id' => 'required|integer|exists:vendors,id',
+            'description' => 'required|string',
         ]);
 
         // Fetch vendor
@@ -103,6 +104,7 @@ class DriverManagementController extends Controller
         $vendorInvoice->vendor_id = $request->vendor_id;
         $vendorInvoice->invoice_number = $randomNumber;
         $vendorInvoice->total = $invoices->sum('total');
+        $vendorInvoice->description = $request->description;
         $vendorInvoice->status = 'unpaid';
         $vendorInvoice->save();
 
