@@ -23,6 +23,7 @@ class VendorInvoiceDetailResource extends JsonResource
             'to'             => optional($this->vendor)->first_name . ' ' . optional($this->vendor)->last_name,
             'phone'          => optional($this->vendor)->contact_number,
             'date'           => $this->created_at->format('Y-m-d'),
+            'invoice_status' => $this->status,
             'package_status' => [
                 'cancelled' => $packages->where('status', 'cancelled')->count(),
                 'completed' => $packages->where('status', 'delivered')->count(),
