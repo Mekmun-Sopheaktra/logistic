@@ -24,7 +24,7 @@ class InvoiceDetailResource extends JsonResource
             'package_price'    => $this->total,
             'cod'              => $this->total,
             'delivery_fee'     => (int) $this->package->shipment?->delivery_fee, // Casting to int
-            'package_status'   => $this->package->status,
+            'status'   => $this->package->invoice->status,
         ];
     }
 }

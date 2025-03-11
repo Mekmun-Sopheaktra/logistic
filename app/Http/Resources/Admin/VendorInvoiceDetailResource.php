@@ -24,10 +24,9 @@ class VendorInvoiceDetailResource extends JsonResource
             'phone'          => optional($this->vendor)->contact_number,
             'date'           => $this->created_at->format('Y-m-d'),
             'package_status' => [
-                'pickup'    => $packages->whereNotNull('picked_up_at')->count(),
                 'cancelled' => $packages->where('status', 'cancelled')->count(),
                 'completed' => $packages->where('status', 'delivered')->count(),
-                'on_hold'   => $packages->where('status', 'pending')->count(),
+                'pending'   => $packages->where('status', 'pending')->count(),
                 'total'     => $packages->count(),
             ],
             'invoices'    => InvoiceDetailResource::collection($this->invoices),
