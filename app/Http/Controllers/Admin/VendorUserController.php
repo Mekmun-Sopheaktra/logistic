@@ -127,7 +127,7 @@ class VendorUserController extends Controller
             'image' => 'nullable',
             'bank_name' => 'nullable|string',
             'bank_number' => 'nullable|string',
-
+            'status' => 'nullable|integer',
             'password' => 'nullable|string|min:6',
         ]);
 
@@ -150,6 +150,7 @@ class VendorUserController extends Controller
             ]);
         }
 
+        logger($request->status);
         $vendor->update([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
@@ -169,6 +170,9 @@ class VendorUserController extends Controller
 
         //get user
         $user = $vendor->user;
+        $user->update([
+            'account_status' => $request->status,
+        ]);
 
         Mail::to($user->email)->send(new VendorRegistrationMail($request->password));
 
