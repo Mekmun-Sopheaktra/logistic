@@ -33,7 +33,6 @@ class SettingController extends Controller
     //update
     public function update(Request $request)
     {
-        //update settings
         $user = auth()->user();
         if (!$user) {
             return $this->failed(null, 'Unauthorized', 'Unauthorized');
