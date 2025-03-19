@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Models\Currency;
+use App\Models\DeliveryFee;
 use App\Traits\BaseApiResponse;
 use App\Traits\UploadImage;
 use Illuminate\Http\Request;
@@ -26,6 +28,11 @@ class SettingController extends Controller
         }
 
         $admin['email'] = $user->email;
+        $currecy = Currency::query()->first();
+        $admin['exchange_rate'] = (int) $currecy->exchange_rate;
+
+        $delivery_fee = DeliveryFee::query()->first();
+        $admin['delivery_fee'] = $delivery_fee->fee;
 
         return $this->success($admin, 'Settings retrieved successfully');
     }
