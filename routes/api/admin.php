@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DeliveryUserController;
+use App\Http\Controllers\Admin\EmployeeUserController;
 use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TrackingController;
@@ -39,19 +40,27 @@ Route::prefix('admin')->group(function () {
 
         //user management
         Route::prefix('vendors')->group(function () {
-            Route::get('/', [VendorUserController::class, 'index'])->name('admin.users');
-            Route::post('/', [VendorUserController::class, 'store'])->name('admin.users.store');
-            Route::get('/{id}', [VendorUserController::class, 'show'])->name('admin.users.show');
-            Route::post('/{id}', [VendorUserController::class, 'update'])->name('admin.users.update');
-            Route::delete('/{id}', [VendorUserController::class, 'destroy'])->name('admin.users.delete');
+            Route::get('/', [VendorUserController::class, 'index'])->name('admin.vendors');
+            Route::post('/', [VendorUserController::class, 'store'])->name('admin.vendors.store');
+            Route::get('/{id}', [VendorUserController::class, 'show'])->name('admin.vendors.show');
+            Route::post('/{id}', [VendorUserController::class, 'update'])->name('admin.vendors.update');
+            Route::delete('/{id}', [VendorUserController::class, 'destroy'])->name('admin.vendors.delete');
+        });
+
+        Route::prefix('employees')->group(function () {
+            Route::get('/', [EmployeeUserController::class, 'index'])->name('admin.employees');
+            Route::post('/', [EmployeeUserController::class, 'store'])->name('admin.employees.store');
+            Route::get('/{id}', [EmployeeUserController::class, 'show'])->name('admin.employees.show');
+            Route::post('/{id}', [EmployeeUserController::class, 'update'])->name('admin.employees.update');
+            Route::delete('/{id}', [EmployeeUserController::class, 'destroy'])->name('admin.employees.delete');
         });
 
         Route::prefix('drivers')->group(function () {
-            Route::get('/', [DeliveryUserController::class, 'index'])->name('drivers.users');
-            Route::post('/', [DeliveryUserController::class, 'store'])->name('drivers.users.store');
-            Route::get('/{id}', [DeliveryUserController::class, 'show'])->name('drivers.users.show');
-            Route::post('/{id}', [DeliveryUserController::class, 'update'])->name('drivers.users.update');
-            Route::delete('/{id}', [DeliveryUserController::class, 'destroy'])->name('drivers.users.delete');
+            Route::get('/', [DeliveryUserController::class, 'index'])->name('admin.drivers.users');
+            Route::post('/', [DeliveryUserController::class, 'store'])->name('admin.drivers.users.store');
+            Route::get('/{id}', [DeliveryUserController::class, 'show'])->name('admin.drivers.users.show');
+            Route::post('/{id}', [DeliveryUserController::class, 'update'])->name('admin.drivers.users.update');
+            Route::delete('/{id}', [DeliveryUserController::class, 'destroy'])->name('admin.drivers.users.delete');
         });
 
         //tracking

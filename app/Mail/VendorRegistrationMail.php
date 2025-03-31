@@ -20,7 +20,7 @@ class VendorRegistrationMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Vendor Registration - Your Password')
+        return $this->subject('Account Registration - Your Password')
             ->view('mail.vendor_registration'); // Create this view to send the email
     }
 }

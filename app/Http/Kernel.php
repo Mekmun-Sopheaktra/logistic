@@ -62,6 +62,7 @@ class Kernel extends HttpKernel
         'delivery.access' => \App\Http\Middleware\DeliveryAccessMiddleware::class,
         'vendor.access' => \App\Http\Middleware\VendorAccessMiddleware::class,
         'admin.access' => \App\Http\Middleware\AdminAccessMiddleware::class,
+        'employee.access' => \App\Http\Middleware\EmployeeAccessMiddleware::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
