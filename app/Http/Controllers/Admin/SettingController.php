@@ -56,6 +56,8 @@ class SettingController extends Controller
             'phone' => 'required',
             'username' => 'required',
             'image' => 'nullable',
+            'exchange_rate' => 'nullable|numeric',
+            'delivery_fee' => 'nullable|numeric',
         ]);
 
         //upload image
@@ -67,6 +69,30 @@ class SettingController extends Controller
         $data['image'] = $image;
 
         $admin->update($data);
+
+        //update currency
+        $currency = Currency::query()->first();
+        if ($currency) {
+            $currency->update([
+                'exchange_rate' => $request->exchange_rate ?? $currency->exchange_rate,
+            ]);
+        } else {
+            Currency::create([
+                'exchange_rate' => $request->exchange_rate ?? 4100,
+            ]);
+        }
+
+        //update delivery fee
+        $delivery_fee = DeliveryFee::query()->first();
+        if ($delivery_fee) {
+            $delivery_fee->update([
+                'fee' => $request->delivery_fee ?? $delivery_fee->fee,
+            ]);
+        } else {
+            DeliveryFee::create([
+                'fee' => $request->delivery_fee ?? 0,
+            ]);
+        }
 
         return $this->success($admin, 'Settings updated successfully');
     }
