@@ -61,14 +61,14 @@ class SettingController extends Controller
         ]);
 
         //upload image
-        $image = $request->image ?? null;
+        $image = $request->image ? $request->image : null;
         if ($request->hasFile('image')) {
             $image = $this->updateImage($request, $admin);
+            $data['image'] = $image;
+            $admin->update($data);
         }
 
-        $data['image'] = $image;
 
-        $admin->update($data);
 
         //update currency
         $currency = Currency::query()->first();
