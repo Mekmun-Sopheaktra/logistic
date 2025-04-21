@@ -29,10 +29,10 @@ class SettingController extends Controller
 
         $admin['email'] = $user->email;
         $currecy = Currency::query()->first();
-        $admin['exchange_rate'] = (int) $currecy->exchange_rate;
+        $admin['exchange_rate'] = (int) $currecy->exchange_rate ?? 4100;
 
         $delivery_fee = DeliveryFee::query()->first();
-        $admin['delivery_fee'] = $delivery_fee->fee;
+        $admin['delivery_fee'] = $delivery_fee->fee ?? 0;
 
         return $this->success($admin, 'Settings retrieved successfully');
     }
