@@ -32,6 +32,7 @@ class Package extends Model
         'delivery_tracking_id',
         'branch_id',
         'package_type_id',
+        'note',
         'status',
     ];
 
