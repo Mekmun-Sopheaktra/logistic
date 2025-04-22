@@ -6,13 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class PackageStoreRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return false;
-    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -22,21 +15,27 @@ class PackageStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'package_number' => 'required|string|max:255',
-            'package_name' => 'required|string|max:255',
+            'sender_name' => 'required|string|max:255',
+            'sender_phone' => 'required|string|max:255',
+
+            'receiver_name' => 'required|string|max:255',
+            'receiver_phone' => 'required|string|max:255',
+
+            'branch_name' => 'required|string|max:255',
+            'branch_phone' => 'required|string|max:255',
+            'branch_address' => 'required|string|max:255',
+
+            'package_type_name' => 'required|string|max:255',
+            'package_type_description' => 'required|string|max:255',
+
             'package_price' => 'required|string',
-            'package_description' => 'nullable|string|max:255',
-            'package_image' => 'nullable',
-            'package_zone' => 'required|string|max:255',
-            'package_note' => 'nullable|string|max:255',
+            'package_price_khr' => 'nullable',
 
-            'customer_first_name' => 'required|string|max:255',
-            'customer_last_name' => 'required|string|max:255',
-            'customer_phone' => 'required|string|max:255',
+            'delivery_fee_price' => 'nullable',
 
-            'customer_location' => 'required',
-            'customer_lat' => 'required',
-            'customer_lng' => 'required',
+            'driver_name' => 'required|string|max:255',
+            'driver_phone' => 'required|string|max:255',
+            'driver_telegram_contact' => 'nullable|max:255',
         ];
     }
 }

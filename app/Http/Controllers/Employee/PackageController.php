@@ -4,16 +4,19 @@ namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\PackageRequest;
+use App\Http\Requests\Employee\PackageStoreRequest;
 use App\Http\Resources\Employee\PackageResource;
 use App\Models\Branch;
 use App\Models\Currency;
 use App\Models\Customer;
+use App\Models\DeliveryFee;
 use App\Models\Driver;
 use App\Models\Package;
 use App\Models\PackageType;
 use App\Models\Shipment;
 use App\Models\Vendor;
 use App\Traits\BaseApiResponse;
+use Dom\DocumentType;
 use Illuminate\Http\Request;
 use function Symfony\Component\String\b;
 
@@ -63,9 +66,11 @@ class PackageController extends Controller
         //load relationships
         $package->load('vendor', 'customer', 'driver', 'location', 'shipment', 'invoice', 'deliveryTracking', 'branch', 'package_type');
 
+        $delivery_fees = DeliveryFee::query()->latest()->first();
         //price_khr is from package price * currencies table exchange_rate
         $currencies = Currency::query()->latest()->first();
         $package->price_khr = (float) $package->price * $currencies->exchange_rate;
+        $package->delivery_fee = $delivery_fees->fee;
 
         if (!$package) {
             return $this->failed(null, 'Package not found', 'Package not found', 404);
@@ -100,12 +105,28 @@ class PackageController extends Controller
             case 'currency':
                 $data = $this->convertCurrency($request);
                 break;
+                //package_type
+            case 'package_type':
+                $data = $this->searchPackageType($request);
+                break;
             default:
                 $data = 404;
 
         }
 
         return $this->success($data, 'Package retrieved successfully');
+    }
+
+    public function searchPackageType(Request $request)
+    {
+        // Get document type by name
+        $documentType = PackageType::where('name', 'like', '%' . $request->input('value') . '%')->first();
+
+        if (!$documentType) {
+            return null;
+        }
+
+        return $documentType;
     }
 
     //get vendor by search phone number
@@ -217,9 +238,47 @@ class PackageController extends Controller
     }
 
     //store
-    public function store(PackageRequest $request)
+    public function store(PackageStoreRequest $request)
     {
+        $vendor = Vendor::where('contact_number', $request->input('sender_phone'))->first();
+        $customer = Customer::where('phone', $request->input('receiver_phone'))->first();
+        $branch = Branch::where('phone', $request->input('branch_phone'))->first();
+        $driver = Driver::where('contact_number', $request->input('driver_phone'))->first();
+        $package_type = PackageType::where('name', $request->input('package_type_name'))->first();
 
+        if (!$package_type) {
+            //create
+            $package_type = new PackageType();
+            $package_type->name = $request->input('package_type_name');
+            $package_type->description = $request->input('package_type_description');
+            $package_type->save();
+        }
+
+        //create customer if not exist
+        if (!$customer) {
+            $customer = new Customer();
+            $customer->first_name = $request->input('receiver_name');
+            $customer->last_name = '';
+            $customer->phone = $request->input('receiver_phone');
+            $customer->save();
+        }
+
+        $package = Package::query()->create([
+            'number' => random_int(100000, 999999),
+            'name' => 'Package' . time(),
+            'slug' => 'package' . time(),
+            'price' => $request->input('package_price'),
+
+            'vendor_id' => $vendor->id,
+            'customer_id' => $customer ? $customer->id : null,
+            'branch_id' => $branch->id,
+            'driver_id' => $driver->id,
+            'package_type_id' => $package_type->id,
+            'note' => $request->input('note'),
+            'zone' => 'A'
+        ]);
+
+        return $this->success($package, 'Package created successfully');
     }
 
 }

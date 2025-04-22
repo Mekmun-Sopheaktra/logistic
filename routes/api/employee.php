@@ -24,6 +24,8 @@ Route::prefix('employee')->group(function () {
 
         Route::prefix('package')->group(function () {
             Route::get('/', [PackageController::class, 'index'])->name('employee.package.index');
+            //store
+            Route::post('/', [PackageController::class, 'store'])->name('employee.package.store');
             Route::get('/{id}', [PackageController::class, 'show'])->name('employee.package.show');
             Route::post('/{id}', [PackageController::class, 'update'])->name('employee.package.update');
         });

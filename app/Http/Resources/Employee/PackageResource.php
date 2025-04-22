@@ -43,7 +43,7 @@ class PackageResource extends JsonResource
                 'status' => $this->status ?? null,
             ],
             'delivery_fee' => [
-                'price' => optional($this->shipment)->delivery_fee ? number_format($this->shipment->delivery_fee) : null,
+                'price' => optional($this->delivery_fee) ? number_format($this->delivery_fee) : null,
             ],
             'driver' => [
                 'name' => $this->driver ? $this->driver->first_name . ' ' . $this->driver->last_name : null,
