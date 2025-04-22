@@ -29,10 +29,10 @@ class SettingController extends Controller
 
         $admin['email'] = $user->email;
         $currecy = Currency::query()->first();
-        $admin['exchange_rate'] = (int) $currecy->exchange_rate;
+        $admin['exchange_rate'] = (int) $currecy->exchange_rate ?? 4100;
 
         $delivery_fee = DeliveryFee::query()->first();
-        $admin['delivery_fee'] = $delivery_fee->fee;
+        $admin['delivery_fee'] = $delivery_fee->fee ?? 0;
 
         return $this->success($admin, 'Settings retrieved successfully');
     }
@@ -56,17 +56,43 @@ class SettingController extends Controller
             'phone' => 'required',
             'username' => 'required',
             'image' => 'nullable',
+            'exchange_rate' => 'nullable|numeric',
+            'delivery_fee' => 'nullable|numeric',
         ]);
 
         //upload image
-        $image = $request->image ?? null;
+        $image = $request->image ? $request->image : null;
         if ($request->hasFile('image')) {
             $image = $this->updateImage($request, $admin);
+            $data['image'] = $image;
+            $admin->update($data);
         }
 
-        $data['image'] = $image;
 
-        $admin->update($data);
+
+        //update currency
+        $currency = Currency::query()->first();
+        if ($currency) {
+            $currency->update([
+                'exchange_rate' => $request->exchange_rate ?? $currency->exchange_rate,
+            ]);
+        } else {
+            Currency::create([
+                'exchange_rate' => $request->exchange_rate ?? 4100,
+            ]);
+        }
+
+        //update delivery fee
+        $delivery_fee = DeliveryFee::query()->first();
+        if ($delivery_fee) {
+            $delivery_fee->update([
+                'fee' => $request->delivery_fee ?? $delivery_fee->fee,
+            ]);
+        } else {
+            DeliveryFee::create([
+                'fee' => $request->delivery_fee ?? 0,
+            ]);
+        }
 
         return $this->success($admin, 'Settings updated successfully');
     }
